@@ -11,3 +11,11 @@ And don't be mad. This is kind of a new idea, but not really. It's just a baby s
 The outside of the bay, there will be more pressure coming into the bay, so it would need to be designed slightly more robust for that potential, which is the point. But really, up to maybe only 20 feet, 22 feet, let's say, something like that. Anything over that, it would just calm things down a heck of a lot.
 
 I could just publish what I have currently and then just add this to it as a side branch, but I like it when it's cohesive, you know. Baby steps. This gets all the good things: you've got the hydro energy, you've got the pressure, hyperbaric wound care, you've got the cold compute, you've got potentially the billionaire Faraday pod, and possibly the tourism. Stay in one of the, stay in a channel, in the channel, right in the middle of the channel, be one of the levers. Maybe you could rent out a lever, and your whole lever, you know, the cool experience: it turns, and you turn with it."
+
+## Second pass, same night: one wall, levers on top, a boat elevator
+
+Dictated by the author, 2026-09-18, later the same session. Verbatim, transcription noise only cleaned.
+
+"The lock sort of concept doesn't have to be a full double-sided section. It really just needs to have a wall with the levers for managing, sometimes. And, by the way, the wall would be probably most of the depth, and the levers would probably be only in the top, like 50 feet maybe.
+
+And then what you would have would be a part where, when the levers are closed, there's an area where a boat can come into it, can be drained so that they're dropped, or filled so that they're raised, so they can enter and exit during calm waters. Just to get up and down, like a little elevator, using the water to float them up or down."
