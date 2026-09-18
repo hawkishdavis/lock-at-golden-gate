@@ -12,7 +12,7 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--fog);color:var(--ink);font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.6}
-.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 96px}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:28px 96px}
 h1,h2,h3{font-family:"Archivo Black","Arial Black",sans-serif;font-weight:400;text-wrap:balance;margin:0;letter-spacing:-.01em}
 h1{font-size:clamp(36px,6.5vw,66px);line-height:1}
 h1 span{color:var(--orange)}
@@ -22,17 +22,19 @@ h3{font-size:16px;margin-bottom:4px}
 .lede{font-size:19px;max-width:62ch;margin:14px 0 0}
 p{max-width:65ch}
 .tabs{display:flex;gap:6px;margin:26px 0 0;border-bottom:2px solid var(--line)}
-.tabs button{font:inherit;font-family:"Archivo Black",sans-serif;font-size:14px;letter-spacing:.02em;padding:10px 16px;border:0;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button{font:inherit;font-family:"Archivo Black",sans-serif;font-size:15px;letter-spacing:.02em;padding:12px 18px;border:0;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
 .tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--orange)}
 .tabs button:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
 .view{display:none}.view.on{display:block}
 .stage{margin:14px 0 0;border:1px solid var(--line);border-radius:4px;background:#fff;overflow:hidden;position:relative}
 canvas{display:block;width:100%;height:auto;max-width:100%;touch-action:none}
-.hud{position:absolute;left:14px;top:12px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);line-height:1.5;background:rgba(255,255,255,.88);padding:6px 9px;border-radius:3px;max-width:60%}
+.banner{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-family:"Archivo Black",sans-serif;font-size:clamp(16px,2.6vw,26px);letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--moss);padding:8px 18px;border-radius:4px;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.banner.on{opacity:1}
+.banner.hold{background:var(--orange)}
+.banner.bad{background:var(--alert)}
+.hud{position:absolute;left:14px;top:12px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);line-height:1.5;background:rgba(255,255,255,.9);padding:6px 9px;border-radius:3px;max-width:52%}
 .hud b{color:var(--ink);font-weight:500}
-.hud .warn{color:var(--alert);font-weight:500}
-.hint{position:absolute;right:14px;bottom:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);background:rgba(255,255,255,.85);padding:3px 7px;border-radius:3px}
-.controls{display:grid;grid-template-columns:1fr;gap:14px;margin-top:12px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:4px}
+.controls{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:4px}
 .ctl label{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
 .ctl label output{color:var(--ink);font-variant-numeric:tabular-nums}
 input[type=range]{width:100%;accent-color:var(--orange);height:26px;margin:0}
@@ -42,6 +44,7 @@ input[type=range]:focus-visible{outline:2px solid var(--deep);outline-offset:3px
 .modes button{font:inherit;font-family:"Source Serif 4",serif;font-weight:600;font-size:15px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
 .modes button[aria-pressed=true]{background:var(--orange);color:#fff;border-color:var(--orange)}
 .modes button.quiet[aria-pressed=true]{background:var(--lever);border-color:var(--lever)}
+.modes button.play{background:var(--ink);color:#fff;border-color:var(--ink)}
 .modes button:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
 .readouts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
 .ro{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:12px 14px}
@@ -49,161 +52,94 @@ input[type=range]:focus-visible{outline:2px solid var(--deep);outline-offset:3px
 .ro .v{font-family:"Archivo Black",sans-serif;font-size:24px;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums}
 .ro .u{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-top:2px}
 .ro.good .v{color:var(--moss)} .ro.warn .v{color:var(--orange)} .ro.bad .v{color:var(--alert)}
+.panel{margin-top:12px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:4px;padding:16px 18px;min-height:120px}
+.panel h3{font-size:18px}
+.panel p{margin:6px 0 0;font-size:15.5px}
+.panel .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.panel .fact{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);line-height:1.5}
+.panel .fact b{display:block;font-family:"Archivo Black",sans-serif;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.panel .src{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);margin-top:10px}
 section{margin-top:52px}
 .q{border-left:3px solid var(--orange);padding:6px 0 6px 20px;margin:18px 0}
 .q p{font-size:19px;line-height:1.5;margin:0}
 .q .who{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:.06em}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px}
-.card p{font-size:15px;margin:6px 0 0;color:var(--muted)}
-.card p b{color:var(--ink);font-weight:600}
-.note{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6}
+.note{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;max-width:none}
 .foot{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font-size:13.5px;font-family:"IBM Plex Mono",monospace;line-height:1.7}
 .foot a{color:var(--deep)}
 a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
-@media (max-width:700px){ .readouts{grid-template-columns:1fr 1fr} .grid{grid-template-columns:1fr} .hud{font-size:11px;max-width:80%} .tabs button{padding:10px 10px;font-size:13px} }
+@media (max-width:700px){ .readouts{grid-template-columns:1fr 1fr} .panel .facts{grid-template-columns:1fr} .hud{font-size:11px;max-width:70%} .tabs button{padding:10px 10px;font-size:13px} .banner{font-size:14px} }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="eyebrow">The Lock at Golden Gate Bridge · a baby step</div>
   <h1>The <span>Lever Wall</span></h1>
-  <p class="lede">Most of the time it is a bathtub with low walls. Permanent wings off each headland, a working middle of apertures and turbines that stay open for the tide, and one lock. Then a storm surge or a king tide comes, the apertures tighten at slack water, and the Bay stops rising. Four ways to look at it: the wall itself, the tide clock that says when it can turn and what the turbines make, the shoreline that does or does not flood, and the section, one wall to the seabed with a band of levers on top.</p>
+  <p class="lede">Most of the time it is a bathtub with low walls. Then a storm surge on a king tide comes, and the only question is whether the levers got to slack water in time. Two views. The why: the tide against the city, hour by hour, this year or twenty years out. The how: the barrier itself, and what each part of it is for.</p>
 
   <div class="tabs" role="tablist">
-    <button role="tab" id="tabWall" aria-selected="true">The wall</button>
-    <button role="tab" id="tabClock" aria-selected="false">The tide clock</button>
-    <button role="tab" id="tabShore" aria-selected="false">The shoreline</button>
-    <button role="tab" id="tabSect" aria-selected="false">The section</button>
+    <button role="tab" id="tabWhy" aria-selected="true">The why</button>
+    <button role="tab" id="tabHow" aria-selected="false">The how</button>
   </div>
 
-  <!-- VIEW 1: THE WALL -->
-  <div class="view on" id="vWall">
+  <!-- THE WHY -->
+  <div class="view on" id="vWhy">
     <div class="stage">
-      <canvas id="cv" width="1200" height="640" aria-label="Plan view of the Golden Gate with a wall of twisting levers across the strait"></canvas>
-      <div class="hud" id="hud"></div>
-      <div class="hint">click any aperture to close it · drag on the water to set the tide · double-click to rent</div>
-    </div>
-    <div class="controls">
-      <div class="ctl">
-        <label for="tide">Ocean above Bay <output id="tideOut">0.0 ft</output></label>
-        <input type="range" id="tide" min="-4" max="30" step="0.5" value="0">
-      </div>
-      <div class="modes">
-        <span class="lbl">Levers</span>
-        <button id="bOpen" aria-pressed="true">Open</button>
-        <button id="bClose" class="quiet" aria-pressed="false">Closed</button>
-        <button id="bWeld" class="quiet" aria-pressed="false">Welded, someday</button>
-        <span class="lbl" style="margin-left:10px">Weather</span>
-        <button id="bCalm">Slack water</button>
-        <button id="bKing">King tide</button>
-        <button id="bSurge">Storm surge</button>
-        <button id="bWorst">2100 worst case</button>
-      </div>
-    </div>
-    <div class="readouts">
-      <div class="ro" id="roS"><div class="k">The wall right now</div><div class="v" id="sV">bathtub</div><div class="u" id="sU">low walls, flow passes</div></div>
-      <div class="ro" id="roH"><div class="k">Head difference</div><div class="v" id="hV">0.0</div><div class="u">feet, ocean minus Bay</div></div>
-      <div class="ro" id="roF"><div class="k">Push on the wall</div><div class="v" id="fV">0</div><div class="u">tons per foot of wall</div></div>
-      <div class="ro" id="roE"><div class="k">Turbines</div><div class="v" id="eV">0</div><div class="u" id="eU">megawatts, illustrative</div></div>
-    </div>
-  </div>
-
-  <!-- VIEW 2: THE TIDE CLOCK -->
-  <div class="view" id="vClock">
-    <div class="stage">
-      <canvas id="cc" width="1200" height="560" aria-label="Tide chart over 48 hours with slack-water windows, storm surge, and turbine energy"></canvas>
-      <div class="hud" id="hudc"></div>
-      <div class="hint">the trick is predicting the window</div>
+      <canvas id="cw" width="1200" height="820" aria-label="Two days of tide against a map of San Francisco Bay. Slack water windows are marked. Low spots flood as the water rises."></canvas>
+      <div class="banner" id="banner">Slack water. Turn now.</div>
+      <div class="hud" id="hudw"></div>
     </div>
     <div class="controls">
       <div class="modes">
-        <span class="lbl">Cycle</span>
-        <button id="cTypical" aria-pressed="true">Typical two days</button>
-        <button id="cStorm" aria-pressed="false">Storm arriving</button>
-        <button id="cKing" aria-pressed="false">King tide week</button>
-        <span class="lbl" style="margin-left:10px">Protocol</span>
-        <button id="cAuto" aria-pressed="true">Close at the last slack before the peak</button>
-        <button id="cNever" aria-pressed="false">Never close</button>
-      </div>
-    </div>
-    <div class="readouts">
-      <div class="ro" id="rcW"><div class="k">Turning windows</div><div class="v" id="cwV">8</div><div class="u">slack waters in 48 hours</div></div>
-      <div class="ro" id="rcC"><div class="k">Closed for</div><div class="v" id="ccV">0</div><div class="u">hours of the 48</div></div>
-      <div class="ro" id="rcE"><div class="k">Energy captured</div><div class="v" id="ceV">0</div><div class="u">megawatt hours, illustrative</div></div>
-      <div class="ro" id="rcP"><div class="k">Bay peak</div><div class="v" id="cpV">0</div><div class="u" id="cpU">feet above mean high water</div></div>
-    </div>
-    <p class="note">Tide shape: a mixed semidiurnal curve like the Gate's, two highs and two lows a day of unequal height, spring range about 6 feet. Slack water is where the curve turns. Turbine power follows the cube of the current through the open gaps and is scaled so a typical day lands in the tens of megawatts average that published Golden Gate tidal estimates describe. Illustrative, not a forecast.</p>
-  </div>
-
-  <!-- VIEW 3: THE SHORELINE -->
-  <div class="view" id="vShore">
-    <div class="stage">
-      <canvas id="cs" width="1200" height="760" aria-label="Stylized map of San Francisco Bay showing which low-lying areas flood at a given water level"></canvas>
-      <div class="hud" id="huds"></div>
-      <div class="hint">stylized, thresholds from the essay's NOAA reading</div>
-    </div>
-    <div class="controls">
-      <div class="ctl">
-        <label for="slr">Sea level rise, permanent <output id="slrOut">0.0 ft</output></label>
-        <input type="range" id="slr" min="0" max="12" step="0.1" value="0">
+        <button class="play" id="wPlay">Play two days</button>
+        <span class="lbl" style="margin-left:6px">Event</span>
+        <button id="eNormal" aria-pressed="true">Normal tides</button>
+        <button id="eKing" aria-pressed="false">Dec 2024 king tide</button>
+        <button id="e1983" aria-pressed="false">Jan 1983 record</button>
+        <button id="e2026" aria-pressed="false">Jan 2026 tide plus surge</button>
       </div>
       <div class="ctl">
-        <label for="event">This event, king tide plus surge, above MHHW <output id="eventOut">0.0 ft</output></label>
-        <input type="range" id="event" min="0" max="8" step="0.1" value="0">
+        <label for="years">Years ahead, city mid projection <output id="yearsOut">0 years, +0.0 ft</output></label>
+        <input type="range" id="years" min="0" max="75" step="1" value="0">
+      </div>
+      <div class="ctl">
+        <label for="scrub">Hour <output id="scrubOut">0.0 h</output></label>
+        <input type="range" id="scrub" min="0" max="48" step="0.1" value="0">
       </div>
       <div class="modes">
         <span class="lbl">The wall</span>
-        <button id="sOpen" aria-pressed="true">Open</button>
-        <button id="sClosed" class="quiet" aria-pressed="false">Closed at slack</button>
-        <span class="lbl" style="margin-left:10px">Presets</span>
-        <button id="sKing">Dec 2024 king tide</button>
-        <button id="sToday">Jan 2026 tide plus surge</button>
-        <button id="s1983">Jan 1983 record</button>
-        <button id="s2050">2050 mid, same storm</button>
-        <button id="s2100">2100 high, same storm</button>
+        <button id="wNever" aria-pressed="true">Never closes</button>
+        <button id="wAuto" class="quiet" aria-pressed="false">Closes at the last slack before the peak</button>
+        <span class="lbl" style="margin-left:10px">Projection</span>
+        <button id="pMid" aria-pressed="true">Mid</button>
+        <button id="pHigh" aria-pressed="false">High</button>
       </div>
     </div>
     <div class="readouts">
-      <div class="ro" id="rsB"><div class="k">Bay water level</div><div class="v" id="sbV">0.0</div><div class="u">feet above today's high tide</div></div>
-      <div class="ro" id="rsA"><div class="k">Areas under water</div><div class="v" id="saV">0</div><div class="u">of 17 named low spots</div></div>
-      <div class="ro" id="rsM"><div class="k">The Marina</div><div class="v" id="smV">dry</div><div class="u">floods on king tides today</div></div>
-      <div class="ro" id="rsT"><div class="k">Salesforce Tower</div><div class="v" id="stV">dry</div><div class="u">SoMa and Transbay, about 9 ft</div></div>
+      <div class="ro" id="rNext"><div class="k">Next slack water</div><div class="v" id="nextV">0.0 h</div><div class="u" id="nextU">four a day, about six hours apart</div></div>
+      <div class="ro" id="rBay"><div class="k">Bay right now</div><div class="v" id="bayV">0.0</div><div class="u">feet above today's high tide</div></div>
+      <div class="ro" id="rFlood"><div class="k">Under water</div><div class="v" id="floodV">0</div><div class="u">of 17 named low spots</div></div>
+      <div class="ro" id="rPeak"><div class="k">Peak this cycle</div><div class="v" id="peakV">0.0</div><div class="u" id="peakU">Bay, feet; ocean in the hud</div></div>
     </div>
-    <p class="note">The map is a sketch, not a survey. The thresholds are sourced, in feet above today’s mean higher high water at the San Francisco gauge. The Embarcadero at the Ferry Building takes street water on a calm day at a predicted 6.8 ft tide, about 1 ft up. Marina Green and Pier 14 flood under current king tides. The December 2024 king tide ran about 1.5 ft up; the January 3, 2026 tide plus surge about 3.8 ft; the January 1983 record about 2.9 ft. The seawall crest is about 5 ft above average high tide. The city’s Sea Level Rise Vulnerability Zone is 108 inches, 66 inches of rise plus 42 of tide and surge, and reaches into SoMa and the Transbay blocks. The city’s 2025 projections, feet: 2050 0.8 to 1.2; 2070 1.4 to 3.0; 2100 3.1 to 6.6; 2150 6.1 to 11.9. The Army Corps plan would raise the Embarcadero shoreline 3.5 to 7.5 ft and the Ferry Building 7 ft, at 17.8 billion dollars. The wall, closed at slack, holds the Bay at the level it closed at, up to a 22 ft ceiling; permanent rise still comes in through the open gaps the rest of the year.</p>
+    <p class="note">Tide shape: the Gate's mixed semidiurnal tide, two highs and two lows a day of unequal height, a full cycle every 12 hours 25 minutes, slack water four times a day where the curve turns. Events are placed on the second day and sized from the record: the December 2024 king tide ran about 1.5 ft above mean higher high water; the January 1983 record about 2.9 ft; the January 3, 2026 tide plus wind surge about 3.8 ft. Years ahead adds the city's 2025 projection, mid: 1.0 ft by 2050, 2.2 by 2070, 4.9 by 2100; high: 1.2, 3.0, 6.6. Flood thresholds per spot are sourced in the README. The map is a sketch. Closed, the wall holds the Bay at the level it closed at, up to a 22 ft ceiling; permanent rise still comes in through the open gaps the rest of the year.</p>
   </div>
 
-
-  <!-- VIEW 4: THE SECTION -->
-  <div class="view" id="vSect">
+  <!-- THE HOW -->
+  <div class="view" id="vHow">
     <div class="stage">
-      <canvas id="cx" width="1200" height="620" aria-label="Cross-section of the Gate: a wall to the seabed, levers in the top fifty feet, and a boat elevator chamber"></canvas>
-      <div class="hud" id="hudx"></div>
-      <div class="hint">one wall, not a double-sided lock</div>
+      <canvas id="ch" width="1200" height="640" aria-label="Schematic of the Golden Gate Bridge with the lever wall beneath it. Click a feature to read what it does."></canvas>
+      <div class="hud" id="hudh">click any part of the barrier</div>
     </div>
-    <div class="controls">
-      <div class="ctl">
-        <label for="xtide">Ocean above Bay <output id="xtideOut">8.0 ft</output></label>
-        <input type="range" id="xtide" min="-4" max="22" step="0.5" value="8">
-      </div>
-      <div class="modes">
-        <span class="lbl">Levers</span>
-        <button id="xOpen" aria-pressed="false">Open</button>
-        <button id="xClosed" class="quiet" aria-pressed="true">Closed</button>
-        <span class="lbl" style="margin-left:10px">Boat elevator</span>
-        <button id="xIn">Boat in from the ocean</button>
-        <button id="xDown">Lower to the Bay</button>
-        <button id="xUp">Raise to the ocean</button>
-        <button id="xOut">Boat out to the Bay</button>
-      </div>
+    <div class="panel" id="panel">
+      <h3>The barrier, in one picture</h3>
+      <p>Looking north from the city. The bridge stays the bridge. Beneath it, a wall to the seabed with permanent wings off each headland, a working middle of apertures and turbines that stay open for the tide, a band of levers in the top fifty feet, and one lock. Click a part.</p>
     </div>
     <div class="readouts">
-      <div class="ro" id="rxW"><div class="k">The wall</div><div class="v" id="xwV">to the seabed</div><div class="u">about 300 feet at the deepest point</div></div>
-      <div class="ro" id="rxL"><div class="k">Levers</div><div class="v" id="xlV">top 50 ft</div><div class="u" id="xlU">closed, holding the head</div></div>
-      <div class="ro" id="rxC"><div class="k">Chamber</div><div class="v" id="xcV">empty</div><div class="u" id="xcU">gates shut on both sides</div></div>
-      <div class="ro" id="rxB"><div class="k">The boat</div><div class="v" id="xbV">outside</div><div class="u" id="xbU">waiting on the ocean side</div></div>
+      <div class="ro"><div class="k">Tides</div><div class="v">2 + 2</div><div class="u">highs and lows a day, 12 h 25 m apart</div></div>
+      <div class="ro"><div class="k">Water through the Gate</div><div class="v">2.5 bn</div><div class="u">cubic meters every six hours</div></div>
+      <div class="ro"><div class="k">Deepest point</div><div class="v">377</div><div class="u">feet, under the bridge</div></div>
+      <div class="ro"><div class="k">Deck width</div><div class="v">90</div><div class="u">feet, the width of one lever</div></div>
     </div>
-    <p class="note">Side view, ocean on the left. The wall runs most of the depth; only the top band twists. When the band is closed and there is a head across it, a boat enters the chamber from the high side, the chamber drains until it matches the low side, the far gate opens, and the boat goes on. It is an elevator that uses the water itself to float the boat up or down. Depths and sizes illustrative.</p>
+    <p class="note">Numbers on the features are illustrative where they say so and sourced where they do not. The Army Corps plan for 7.5 miles of city seawall is the comparison every dollar figure here stands beside.</p>
   </div>
 
   <section>
@@ -212,25 +148,11 @@ a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
       <p>They can only turn when the water levels are fairly equal on either side, because it is a matter of strength. It is the resistance of the water on either side that makes it strong. You are not having to hold water back and you are not having to push the water this way or that way. You are just channeling the flow a bit.</p>
       <div class="who">Hawk Davis, dictated 2026-09-18</div>
     </div>
-    <p>A dam fights the ocean all day. A lever wall waits. At slack water there is nothing to fight, so the levers twist for the cost of turning them. Closed, the wall is a low dam only for the hours it needs to be one. The design ceiling is about 20 to 22 feet of head. Above that it does not hold everything back. It calms things down a heck of a lot, which is the point. The trick of the whole thing is prediction: knowing the slack window before the surge, and closing in it.</p>
-  </section>
-
-  <section>
-    <h2>What one wall buys</h2>
-    <div class="grid">
-      <div class="card"><h3>Hydro energy</h3><p>The levers are turbines. Every tide through the gaps is power, and a closed wall with a head across it is a head to spend. <b>Tidal power is the maintenance budget.</b></p></div>
-      <div class="card"><h3>Pressure and cold</h3><p>Deep, cold, moving seawater beside a city: <b>hyperbaric wound care, cold compute</b>, a Faraday pod for whoever needs to disappear from the spectrum for a week.</p></div>
-      <div class="card"><h3>Rent a lever</h3><p>Stay in the middle of the channel, inside a lever. <b>It turns, and you turn with it.</b> Click one on the wall.</p></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>What the numbers are doing</h2>
-    <p>Push on a closed wall is hydrostatic: seawater weighs about 64 pounds per cubic foot, so a head difference of h feet over a panel d feet deep loads the panel at roughly 64 × h × d pounds per foot of wall. The model uses a 40-foot panel on a sill. At 22 feet of head that is about 28 tons per foot, which is why the ocean-facing side is built heavier and why the wall is never asked to turn under load.</p>
+    <p>A dam fights the ocean all day. A lever wall waits. At slack water there is nothing to fight, so the levers twist for the cost of turning them. Closed, the wall is a low dam only for the hours it needs to be one. The trick of the whole thing is prediction: knowing the slack window before the surge, and closing in it. That is what the first view is for.</p>
   </section>
 
   <div class="foot">
-    Part of <a href="https://github.com/hawkishdavis/lock-at-golden-gate">The Lock at Golden Gate Bridge</a>: the essay, the full Lock Project compilation, and the lever-wall addendum. Idea on record since December 2024. Not engineering advice. Nothing here is a claim of buildability.
+    Part of <a href="https://github.com/hawkishdavis/lock-at-golden-gate">The Lock at Golden Gate Bridge</a>: the essay, the full Lock Project compilation, the lever-wall addendum, and the sources. Idea on record since December 2024. Not engineering advice. Nothing here is a claim of buildability.
   </div>
 </div>
 
@@ -240,340 +162,163 @@ const $=s=>document.querySelector(s);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function press(id,on){$(id).setAttribute('aria-pressed',on?'true':'false')}
+[['#tabWhy','#vWhy'],['#tabHow','#vHow']].forEach(([t,v],i,arr)=>{ $(t).onclick=()=>{ arr.forEach(([tt,vv])=>{ $(tt).setAttribute('aria-selected',tt===t?'true':'false'); $(vv).classList.toggle('on',vv===v); }); if(v==='#vHow') drawHow(); }; });
 
-/* ---------- tabs ---------- */
-const tabs=[['#tabWall','#vWall'],['#tabClock','#vClock'],['#tabShore','#vShore'],['#tabSect','#vSect']];
-tabs.forEach(([t,v])=>{ $(t).onclick=()=>{ tabs.forEach(([tt,vv])=>{ $(tt).setAttribute('aria-selected',tt===t?'true':'false'); $(vv).classList.toggle('on',vv===v); }); }; });
-
-/* ========== VIEW 1: THE WALL ========== */
-const cv=$('#cv'), ctx=cv.getContext('2d'); const W=cv.width,H=cv.height;
-const N=13, wallX=W*0.52, top=118, bot=H-118, midTop=top+(bot-top)/3, midBot=bot-(bot-top)/3-56, pitch=(midBot-midTop)/N;
-const st={tide:0, weld:false, rented:-1, t:0, strain:0, msg:''};
-const levers=[]; for(let i=0;i<N;i++) levers.push({a:0,target:0});
-const parts=[]; for(let i=0;i<300;i++) parts.push({x:Math.random()*W,y:top+Math.random()*(bot-top),s:.6+Math.random()});
-function slack(){ return Math.abs(st.tide)<=1; }
-function setAll(target){ if(st.weld) return; levers.forEach(l=>l.target=target); }
-function drawWall(){
-  const dh=st.tide;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle=css('--ocean'); ctx.fillRect(0,0,wallX,H);
-  ctx.fillStyle=css('--bay'); ctx.fillRect(wallX,0,W-wallX,H);
-  if(dh>0){ ctx.fillStyle='rgba(79,127,156,'+Math.min(.55,dh/40)+')'; ctx.fillRect(0,0,wallX,H); }
-  if(dh<0){ ctx.fillStyle='rgba(79,127,156,'+Math.min(.4,-dh/30)+')'; ctx.fillRect(wallX,0,W-wallX,H); }
-  ctx.fillStyle=css('--land');
-  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(W,0); ctx.lineTo(W,70); ctx.quadraticCurveTo(W*0.55,140,W*0.42,90); ctx.quadraticCurveTo(W*0.3,60,0,95); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(W,H); ctx.lineTo(W,H-60); ctx.quadraticCurveTo(W*0.6,H-140,W*0.45,H-95); ctx.quadraticCurveTo(W*0.25,H-70,0,H-110); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle=css('--orange'); ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(W*0.40,86); ctx.lineTo(W*0.44,H-92); ctx.stroke();
-  ctx.fillStyle=css('--orange'); [[W*0.407,200],[W*0.43,H-206]].forEach(p=>{ctx.fillRect(p[0]-6,p[1]-16,12,32)});
-  // openness of the whole wall = mean cos(angle)
-  const openness=st.weld?0:levers.reduce((s,l)=>s+Math.cos(l.a),0)/N;
-  const pass=Math.max(0.06,openness);
-  const midTopL=midTop, midBotL=midBot;
-  const dir=dh>=0?1:-1;
-  const drive=Math.min(3,Math.abs(dh));
-  parts.forEach(p=>{
-    const oceanSide=p.x<wallX;
-    // ocean side always moves with the tide; bay side moves only as much as passes the wall
-    let v=(reduced?0:1)*(0.5+drive*0.6)*p.s*dir;
-    if(!oceanSide) v*=pass;               // calm behind a closed wall
-    const inMid=p.y>midTop&&p.y<midBot; if(Math.abs(p.x-wallX)<16 && (!inMid || Math.random()>pass)) v=0; // wings block; the middle passes what the apertures allow
-    p.x+=v; if(p.x>W) p.x=0; if(p.x<0) p.x=W;
-    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.fillRect(p.x,p.y,2.2,1.4);
-  });
-  // permanent wings: about a third off each headland is solid wall, no way no how
-  const wingLen=(bot-top)/3;
-  ctx.fillStyle=css('--lever'); ctx.fillRect(wallX-9,top-6,18,wingLen); ctx.fillRect(wallX-9,bot-wingLen+6,18,wingLen);
-  ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font='500 11px "IBM Plex Mono", monospace';
-  ctx.save(); ctx.translate(wallX+22,top+wingLen*0.5); ctx.rotate(Math.PI/2); ctx.fillStyle='rgba(31,36,39,.8)'; ctx.fillText('permanent wing: aquaculture, healing, tourism', -120, 0); ctx.restore();
-  ctx.save(); ctx.translate(wallX+22,bot-wingLen*0.5); ctx.rotate(Math.PI/2); ctx.fillStyle='rgba(31,36,39,.8)'; ctx.fillText('permanent wing, and the lock chamber', -110, 0); ctx.restore();
-  // the one lock chamber, against the SF wing
-  ctx.fillStyle='rgba(240,74,0,.18)'; ctx.fillRect(wallX-40,bot-wingLen-52,80,46); ctx.strokeStyle=css('--orange'); ctx.lineWidth=2; ctx.strokeRect(wallX-40,bot-wingLen-52,80,46);
-  ctx.fillStyle=css('--orange'); ctx.font='500 11px "IBM Plex Mono", monospace'; ctx.fillText('lock', wallX-12, bot-wingLen-24);
-  // working middle: apertures with turbine fins; angle 0 = open, PI/2 = closed
-  for(let i=0;i<N;i++){
-    const l=levers[i], cy=midTop+pitch*(i+0.5), len=pitch*0.92;
-    const ang=Math.PI/2-l.a + (st.strain>0?Math.sin(st.t*40)*0.05*st.strain:0);
-    const dx=Math.cos(ang)*len/2, dy=Math.sin(ang)*len/2;
-    ctx.save(); ctx.translate(wallX,cy);
-    ctx.strokeStyle=(i===st.rented)?css('--orange'):css('--lever'); ctx.lineWidth=(i===st.rented)?9:7; ctx.lineCap='round';
-    // aperture ring: opening shrinks as the unit closes
-    const op=Math.cos(l.a); ctx.strokeStyle='rgba(43,47,51,.55)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,len*0.42,0,Math.PI*2); ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,'+(0.15+0.55*op)+')'; ctx.beginPath(); ctx.arc(0,0,len*0.40*Math.max(0.08,op),0,Math.PI*2); ctx.fill();
-    // turbine fin, twisting with the closure
-    ctx.beginPath(); ctx.moveTo(-dx,-dy); ctx.lineTo(dx,dy); ctx.stroke();
-    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(0,0,4,0,Math.PI*2); ctx.fill();
-    ctx.restore();
-  }
-  ctx.strokeStyle='rgba(43,47,51,.35)'; ctx.setLineDash([6,8]); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(wallX,top-6); ctx.lineTo(wallX,bot+6); ctx.stroke(); ctx.setLineDash([]);
-  ctx.font='500 13px "IBM Plex Mono", monospace'; ctx.fillStyle='rgba(31,36,39,.8)';
-  ctx.fillText('PACIFIC', 24, H/2+4); ctx.fillText('THE BAY', W-96, H/2+4);
-  ctx.fillText('Marin Headlands', 24, 30); ctx.fillText('San Francisco', 24, H-22);
-  gauge(60, dh>0?dh:0); gauge(W-60, dh<0?-dh:0);
-  if(st.rented>=0){ ctx.fillStyle=css('--orange'); ctx.fillText('Lever '+(st.rented+1)+' booked. It turns, and you turn with it.', wallX+22, midTop+pitch*(st.rented+0.5)+4); }
-}
-function gauge(x,h){
-  const gh=Math.min(160,h*5.3); ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(x-8,H/2+80-160,16,160);
-  ctx.fillStyle=h>22?css('--alert'):css('--orange'); ctx.fillRect(x-8,H/2+80-gh,16,gh);
-  ctx.strokeStyle='rgba(31,36,39,.5)'; ctx.lineWidth=1; ctx.strokeRect(x-8.5,H/2+80-160.5,17,161);
-  ctx.fillStyle='rgba(31,36,39,.8)'; ctx.font='11px "IBM Plex Mono", monospace'; ctx.fillText(h.toFixed(1)+' ft', x-20, H/2+96);
-}
-function stepWall(dt){
-  st.t+=dt; let anyWaiting=false;
-  levers.forEach(l=>{
-    if(Math.abs(l.a-l.target)>0.001){
-      if(slack()||st.weld){ const k=Math.sign(l.target-l.a); l.a+=k*dt*1.6; if((k>0&&l.a>l.target)||(k<0&&l.a<l.target)) l.a=l.target; }
-      else anyWaiting=true;
-    }
-  });
-  st.strain=anyWaiting?Math.min(1,st.strain+dt*3):Math.max(0,st.strain-dt*3);
-  st.msg=anyWaiting?'won’t turn under load. waiting for slack water.':'';
-}
-function readWall(){
-  const dh=st.tide; const closedness=st.weld?1:levers.reduce((s,l)=>s+Math.sin(l.a),0)/N;
-  $('#tideOut').textContent=dh.toFixed(1)+' ft';
-  $('#hV').textContent=Math.abs(dh).toFixed(1);
-  $('#roH').className='ro '+(Math.abs(dh)<=1?'good':Math.abs(dh)<=22?'warn':'bad');
-  const tons=(64*Math.abs(dh)*40/2000)*closedness; $('#fV').textContent=tons.toFixed(1);
-  $('#roF').className='ro '+(tons<5?'good':tons<28?'warn':'bad');
-  const openness=1-closedness; const cur=Math.min(3,Math.abs(dh))*0.8+0.8; // knots-ish
-  const mw=Math.round(60*Math.pow(cur/3,3)*(0.35+0.65*openness)*(Math.abs(dh)>0.2?1:0.3));
-  $('#eV').textContent=mw; $('#eU').textContent=openness<0.2?'megawatts, gaps only':'megawatts, illustrative';
-  $('#roE').className='ro '+(mw>20?'good':'warn');
-  const sV=$('#sV'), sU=$('#sU'), roS=$('#roS');
-  if(st.weld){ sV.textContent='welded'; sU.textContent='a low dam, permanently'; roS.className='ro warn'; }
-  else if(st.strain>0.5){ sV.textContent='waiting'; sU.textContent='for slack water to turn'; roS.className='ro warn'; }
-  else if(closedness>0.95){ if(Math.abs(dh)>22){ sV.textContent='overtopped'; sU.textContent='above the design ceiling, still calming things'; roS.className='ro bad'; } else { sV.textContent='holding'; sU.textContent='Bay side calm, ocean pushing'; roS.className='ro good'; } }
-  else if(closedness<0.05){ sV.textContent='bathtub'; sU.textContent='low walls, flow passes'; roS.className='ro good'; }
-  else { sV.textContent='turning'; sU.textContent='at slack water, for the cost of turning'; roS.className='ro good'; }
-  $('#hud').innerHTML='head <b>'+dh.toFixed(1)+' ft</b> · wall <b>'+Math.round(closedness*100)+'% closed</b> · ceiling <b>22 ft</b>'+(st.msg?'<br><span class="warn">'+st.msg+'</span>':(slack()?'<br>slack water: the levers can turn now':'<br>tide running: the levers hold their angle'));
-}
-$('#bOpen').onclick=()=>{setAll(0);press('#bOpen',1);press('#bClose',0);};
-$('#bClose').onclick=()=>{setAll(Math.PI/2);press('#bOpen',0);press('#bClose',1);};
-$('#bWeld').onclick=()=>{ st.weld=!st.weld; press('#bWeld',st.weld); if(st.weld){levers.forEach(l=>{l.target=Math.PI/2;}); press('#bOpen',0);press('#bClose',0);} };
-function setTide(v){ v=Math.max(-4,Math.min(30,v)); st.tide=v; $('#tide').value=v; }
-$('#bCalm').onclick=()=>setTide(0); $('#bKing').onclick=()=>setTide(7); $('#bSurge').onclick=()=>setTide(14); $('#bWorst').onclick=()=>setTide(24);
-$('#tide').oninput=e=>{st.tide=+e.target.value;};
-let dragging=false, dragY=0, dragT=0;
-function canvasXY(e){ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]; }
-cv.addEventListener('pointerdown',e=>{ const [x,y]=canvasXY(e);
-  if(Math.abs(x-wallX)<40 && y>midTop && y<midBot){ const i=Math.floor((y-midTop)/pitch); const l=levers[i]; if(e.shiftKey){ st.rented=(st.rented===i?-1:i);} else if(!st.weld){ l.target=(l.target>0.7?0:Math.PI/2);} return; }
-  dragging=true; dragY=y; dragT=st.tide; cv.setPointerCapture(e.pointerId); });
-cv.addEventListener('pointermove',e=>{ if(!dragging) return; const [x,y]=canvasXY(e); setTide(Math.round((dragT+(dragY-y)/12)*2)/2); });
-cv.addEventListener('pointerup',()=>dragging=false); cv.addEventListener('pointercancel',()=>dragging=false);
-cv.addEventListener('dblclick',e=>{ const [x,y]=canvasXY(e); if(Math.abs(x-wallX)<40 && y>midTop && y<midBot){ const i=Math.floor((y-midTop)/pitch); st.rented=(st.rented===i?-1:i);} });
-
-/* ========== VIEW 2: THE TIDE CLOCK ========== */
-const cc=$('#cc'), c2=cc.getContext('2d'); const CW=cc.width, CH=cc.height;
-const clock={scen:'typical', proto:'auto', t:0};
-function tideAt(h,scen){ // feet above mean water, mixed semidiurnal
-  let base=1.9*Math.cos(2*Math.PI*h/12.42)+1.1*Math.cos(2*Math.PI*h/23.93+0.9)+0.4*Math.cos(2*Math.PI*h/25.82+2.1);
-  if(scen==='king') base*=1.35;
-  let surge=0;
-  if(scen==='storm'){ const c=30; surge=9*Math.exp(-Math.pow((h-c)/6,2)); }
-  return {tide:base, surge, total:base+surge};
-}
-function computeCycle(){
-  const scen=clock.scen, proto=clock.proto; const pts=[]; const slacks=[];
-  let prev=null, prevSlope=0;
-  for(let i=0;i<=480;i++){ const h=i/10; const o=tideAt(h,scen); pts.push({h,o}); }
-  // slack = local extremum of ocean level (flow reverses)
-  for(let i=1;i<pts.length-1;i++){ const a=pts[i-1].o.total,b=pts[i].o.total,c=pts[i+1].o.total; if((b>=a&&b>=c)||(b<=a&&b<=c)) slacks.push(pts[i].h); }
-  // find peak and last slack before peak
-  let peakI=0; pts.forEach((p,i)=>{ if(p.o.total>pts[peakI].o.total) peakI=i; });
-  const peakH=pts[peakI].h;
-  let closeAt=null, openAt=null;
-  if(proto==='auto' && pts[peakI].o.total>4.5){
-    const before=slacks.filter(s=>s<peakH-0.5); closeAt=before.length?before[before.length-1]:null;
-    const after=slacks.filter(s=>s>peakH+0.5); openAt=after.length?after[0]:null;
-  }
-  // bay level: follows ocean when open, frozen when closed; energy: cube of current when open, head-turbine when closed
-  let bay=pts[0].o.total, energy=0, closedHours=0, bayPeak=-99; const series=[];
-  for(let i=0;i<pts.length;i++){
-    const p=pts[i]; const closed=(closeAt!==null && p.h>=closeAt && (openAt===null||p.h<openAt));
-    if(!closed) bay=p.o.total; else closedHours+=0.1;
-    const slope=i>0?(pts[i].o.total-pts[i-1].o.total)/0.1:0; // ft/h
-    const cur=Math.abs(slope)*1.1; // knots-ish
-    let mw=closed? 12*Math.min(1,Math.abs(p.o.total-bay)/6) : 60*Math.pow(Math.min(cur,3)/3,3);
-    energy+=mw*0.1;
-    bayPeak=Math.max(bayPeak,bay);
-    series.push({h:p.h,ocean:p.o.total,tide:p.o.tide,bay,closed,mw});
-  }
-  return {series,slacks,closeAt,openAt,peakH,energy,closedHours,bayPeak,oceanPeak:pts[peakI].o.total};
-}
-function drawClock(){
-  const R=computeCycle();
-  c2.clearRect(0,0,CW,CH);
-  const L=70,Rr=30,T=40,B=CH-110; const x=h=>L+(CW-L-Rr)*h/48; const ymin=-6,ymax=14; const y=v=>B-(B-T)*(v-ymin)/(ymax-ymin);
-  // grid
-  c2.strokeStyle='rgba(31,36,39,.12)'; c2.lineWidth=1; c2.font='11px "IBM Plex Mono", monospace'; c2.fillStyle='rgba(31,36,39,.6)';
-  for(let v=-4;v<=14;v+=2){ c2.beginPath(); c2.moveTo(L,y(v)); c2.lineTo(CW-Rr,y(v)); c2.stroke(); c2.fillText((v>0?'+':'')+v+' ft', 14, y(v)+4); }
-  for(let h=0;h<=48;h+=6){ c2.beginPath(); c2.moveTo(x(h),T); c2.lineTo(x(h),B); c2.stroke(); c2.fillText(h%24===0?('day '+(h/24+1)):(h%24)+'h', x(h)-10, B+16); }
-  // closed band
-  if(R.closeAt!==null){ c2.fillStyle='rgba(240,74,0,.10)'; c2.fillRect(x(R.closeAt),T,x(R.openAt??48)-x(R.closeAt),B-T); }
-  // slack windows
-  R.slacks.forEach(s=>{ c2.fillStyle='rgba(92,140,90,.18)'; c2.fillRect(x(s)-x(0.6)+L,T,(x(1.2)-L),B-T); });
-  // surge shading between tide and total
-  c2.beginPath(); R.series.forEach((p,i)=>{ i?c2.lineTo(x(p.h),y(p.ocean)):c2.moveTo(x(p.h),y(p.ocean)); }); for(let i=R.series.length-1;i>=0;i--){ c2.lineTo(x(R.series[i].h),y(R.series[i].tide)); } c2.closePath(); c2.fillStyle='rgba(184,50,42,.18)'; c2.fill();
-  // ocean line
-  c2.beginPath(); R.series.forEach((p,i)=>{ i?c2.lineTo(x(p.h),y(p.ocean)):c2.moveTo(x(p.h),y(p.ocean)); }); c2.strokeStyle=css('--deep'); c2.lineWidth=2.5; c2.stroke();
-  // bay line
-  c2.beginPath(); R.series.forEach((p,i)=>{ i?c2.lineTo(x(p.h),y(p.bay)):c2.moveTo(x(p.h),y(p.bay)); }); c2.strokeStyle=css('--orange'); c2.lineWidth=3; c2.stroke();
-  // energy bars along the bottom
-  const eb=CH-96; const ebh=60;
-  R.series.forEach((p,i)=>{ if(i%4) return; const hgt=Math.min(ebh,p.mw/60*ebh); c2.fillStyle=p.closed?'rgba(240,74,0,.55)':'rgba(79,127,156,.55)'; c2.fillRect(x(p.h),eb+ebh-hgt,3,hgt); });
-  c2.fillStyle='rgba(31,36,39,.6)'; c2.fillText('turbine output', L, eb-4);
-  // legend
-  c2.fillStyle=css('--deep'); c2.fillRect(CW-330,T-24,14,4); c2.fillStyle='rgba(31,36,39,.8)'; c2.fillText('ocean', CW-312,T-18);
-  c2.fillStyle=css('--orange'); c2.fillRect(CW-250,T-24,14,4); c2.fillText('Bay', CW-232,T-18);
-  c2.fillStyle='rgba(184,50,42,.4)'; c2.fillRect(CW-190,T-26,14,8); c2.fillText('surge', CW-172,T-18);
-  c2.fillStyle='rgba(92,140,90,.4)'; c2.fillRect(CW-120,T-26,14,8); c2.fillText('slack', CW-102,T-18);
-  if(R.closeAt!==null){ c2.fillStyle=css('--orange'); c2.font='500 12px "IBM Plex Mono", monospace'; c2.fillText('close', x(R.closeAt)+4, T+14); if(R.openAt!==null) c2.fillText('open', x(R.openAt)+4, T+14); }
-  $('#cwV').textContent=R.slacks.length; $('#ccV').textContent=R.closedHours.toFixed(1);
-  $('#ceV').textContent=Math.round(R.energy); $('#cpV').textContent=R.bayPeak.toFixed(1);
-  const rcP=$('#rcP'); rcP.className='ro '+(R.bayPeak<4?'good':R.bayPeak<8?'warn':'bad');
-  $('#cpU').textContent=R.closeAt!==null?('ocean peaked at '+R.oceanPeak.toFixed(1)+' ft, held out'):('feet above mean water, wall never closed');
-  $('#hudc').innerHTML=(R.closeAt!==null?('closes at slack <b>'+R.closeAt.toFixed(1)+' h</b>, reopens at <b>'+(R.openAt??48).toFixed(1)+' h</b>'):'no closure in this cycle')+'<br>peak ocean <b>'+R.oceanPeak.toFixed(1)+' ft</b> · peak Bay <b>'+R.bayPeak.toFixed(1)+' ft</b>';
-}
-function setScen(s){ clock.scen=s; press('#cTypical',s==='typical'); press('#cStorm',s==='storm'); press('#cKing',s==='king'); drawClock(); }
-$('#cTypical').onclick=()=>setScen('typical'); $('#cStorm').onclick=()=>setScen('storm'); $('#cKing').onclick=()=>setScen('king');
-$('#cAuto').onclick=()=>{clock.proto='auto';press('#cAuto',1);press('#cNever',0);drawClock();};
-$('#cNever').onclick=()=>{clock.proto='never';press('#cAuto',0);press('#cNever',1);drawClock();};
-
-/* ========== VIEW 3: THE SHORELINE ========== */
-const cs=$('#cs'), c3=cs.getContext('2d'); const SW=cs.width, SH=cs.height;
-const shore={slr:0, event:0, closed:false};
-// stylized bay: polygons in canvas coords. Low spots with flood thresholds (feet above today's high tide), from the essay's NOAA reading.
+/* ---------- shared data ---------- */
+const EVENTS={normal:{surge:0,label:'normal tides'},king:{surge:1.5,label:'Dec 2024 king tide, about 1.5 ft'},r1983:{surge:2.9,label:'Jan 1983 record, about 2.9 ft'},s2026:{surge:3.8,label:'Jan 3 2026 tide plus surge, about 3.8 ft'}};
+const PROJ={mid:[[0,0],[24,1.0],[44,2.2],[74,4.9]],high:[[0,0],[24,1.2],[44,3.0],[74,6.6]]};
+function slrFor(years,proj){ const p=PROJ[proj]; for(let i=1;i<p.length;i++){ if(years<=p[i][0]){ const [y0,v0]=p[i-1],[y1,v1]=p[i]; return v0+(v1-v0)*(years-y0)/(y1-y0); } } return p[p.length-1][1]+(years-74)*0.06; }
 const spots=[
-  {n:'Manzanita, Hwy 101 at Mill Valley',x:310,y:150,r:20,t:1,src:'floods on ordinary king tides'},
-  {n:'Embarcadero at the Ferry Building',x:420,y:300,r:22,t:1,src:'street flooding at a predicted 6.8 ft tide, about 1 ft above MHHW'},
-  {n:'Marina Green',x:330,y:250,r:22,t:1.5,tag:'marina',src:'floods under current king tides'},
-  {n:'Mission Creek and Mission Bay',x:430,y:360,r:26,t:2,src:'vulnerable today to coastal overtopping'},
-  {n:'Islais Creek',x:470,y:440,r:22,t:2,src:'vulnerable today, creek plus Bay'},
-  {n:'SFO runways',x:520,y:560,r:30,t:2,src:'NOAA viewer, about 2 ft'},
-  {n:'OAK runways',x:640,y:470,r:28,t:2,src:'NOAA viewer, about 2 ft'},
-  {n:'Alameda',x:600,y:400,r:30,t:2,src:'NOAA viewer, about 2 ft'},
-  {n:'Foster City',x:610,y:640,r:32,t:2,src:'NOAA viewer, about 2 ft'},
-  {n:'Alviso',x:900,y:720,r:34,t:2,src:'NOAA viewer, about 2 ft'},
-  {n:'Fisherman’s Wharf piers',x:380,y:262,r:20,t:3,src:'Army Corps plan: floodproof the piers'},
-  {n:'Treasure Island edge',x:520,y:300,r:18,t:3,src:'filled shoreline, city vulnerability zone'},
-  {n:'Berkeley Marina',x:560,y:240,r:22,t:3,src:'illustrative'},
-  {n:'Emeryville',x:585,y:280,r:18,t:3,src:'illustrative'},
-  {n:'Oakland waterfront',x:610,y:330,r:28,t:4,src:'illustrative'},
-  {n:'Embarcadero seawall crest',x:445,y:330,r:16,t:5,src:'seawall about 5 ft above average high tide'},
-  {n:'SoMa and Transbay, Salesforce Tower',x:405,y:318,r:14,t:9,tag:'tower',src:'inside the city’s 108-inch vulnerability zone'}
+  {n:'Manzanita, Hwy 101 at Mill Valley',x:310,y:150,r:18,t:1},
+  {n:'Embarcadero at the Ferry Building',x:420,y:300,r:20,t:1},
+  {n:'Marina Green',x:330,y:250,r:20,t:1.5},
+  {n:'Mission Creek and Mission Bay',x:430,y:360,r:24,t:2},
+  {n:'Islais Creek',x:470,y:440,r:20,t:2},
+  {n:'SFO runways',x:520,y:560,r:28,t:2},
+  {n:'OAK runways',x:640,y:470,r:26,t:2},
+  {n:'Alameda',x:600,y:400,r:28,t:2},
+  {n:'Foster City',x:610,y:640,r:30,t:2},
+  {n:'Alviso',x:900,y:720,r:32,t:2},
+  {n:'Fisherman’s Wharf piers',x:380,y:262,r:18,t:3},
+  {n:'Treasure Island edge',x:520,y:300,r:16,t:3},
+  {n:'Berkeley Marina',x:560,y:240,r:20,t:3},
+  {n:'Emeryville',x:585,y:280,r:16,t:3},
+  {n:'Oakland waterfront',x:610,y:330,r:26,t:4},
+  {n:'Embarcadero seawall crest',x:445,y:330,r:14,t:5},
+  {n:'SoMa and Transbay, Salesforce Tower',x:405,y:318,r:12,t:9}
 ];
-function bayLevel(){ // permanent rise always reaches the Bay (levers open most of the time); the event is held out if closed
-  return shore.slr + (shore.closed?0:shore.event);
-}
-function drawShore(){
-  c3.clearRect(0,0,SW,SH);
-  c3.fillStyle=css('--land'); c3.fillRect(0,0,SW,SH);
-  // the bay as a rough polygon
-  c3.fillStyle=css('--bay');
-  c3.beginPath(); c3.moveTo(0,300); c3.quadraticCurveTo(200,260,380,270); c3.lineTo(420,220); c3.quadraticCurveTo(520,180,560,210); c3.lineTo(600,300); c3.lineTo(640,360); c3.quadraticCurveTo(660,430,600,470); c3.lineTo(560,520); c3.quadraticCurveTo(600,600,700,650); c3.quadraticCurveTo(800,700,940,740); c3.lineTo(900,760); c3.lineTo(640,760); c3.quadraticCurveTo(540,700,480,600); c3.lineTo(450,520); c3.lineTo(440,420); c3.lineTo(390,330); c3.lineTo(300,300); c3.lineTo(0,330); c3.closePath(); c3.fill();
-  // north bay arm
-  c3.beginPath(); c3.moveTo(420,220); c3.quadraticCurveTo(470,120,560,80); c3.lineTo(620,100); c3.quadraticCurveTo(560,170,560,210); c3.closePath(); c3.fill();
-  // the Gate + wall
-  c3.strokeStyle=css('--orange'); c3.lineWidth=5; c3.beginPath(); c3.moveTo(300,272); c3.lineTo(330,300); c3.stroke();
-  c3.strokeStyle=shore.closed?css('--lever'):'rgba(43,47,51,.35)'; c3.lineWidth=shore.closed?6:3; c3.setLineDash(shore.closed?[]:[5,6]); c3.beginPath(); c3.moveTo(282,286); c3.lineTo(318,318); c3.stroke(); c3.setLineDash([]);
-  const lvl=bayLevel(); let under=0;
-  spots.forEach(s=>{
-    const wet=lvl>=s.t; if(wet) under++;
-    const depth=Math.max(0,lvl-s.t);
-    c3.beginPath(); c3.arc(s.x,s.y,s.r*(wet?1+Math.min(.6,depth/8):1),0,Math.PI*2);
-    c3.fillStyle=wet?'rgba(47,110,158,'+Math.min(.85,.35+depth/10)+')':'rgba(255,255,255,.55)'; c3.fill();
-    c3.strokeStyle=wet?css('--flood'):'rgba(31,36,39,.35)'; c3.lineWidth=wet?2:1; c3.stroke();
-    c3.fillStyle='rgba(31,36,39,.85)'; c3.font=(wet?'500 ':'')+'12px "IBM Plex Mono", monospace'; c3.fillText(s.n+'  ('+s.t+' ft)', s.x+s.r+6, s.y+4);
-  });
-  c3.fillStyle='rgba(31,36,39,.75)'; c3.font='500 13px "IBM Plex Mono", monospace';
-  c3.fillText('PACIFIC', 40, 200); c3.fillText('SAN FRANCISCO', 300, 400); c3.fillText('OAKLAND', 700, 300); c3.fillText('SOUTH BAY', 760, 600); c3.fillText('the Gate', 236, 318);
-  $('#slrOut').textContent=shore.slr.toFixed(1)+' ft'; $('#eventOut').textContent=shore.event.toFixed(1)+' ft';
-  $('#sbV').textContent=lvl.toFixed(1); $('#rsB').className='ro '+(lvl<2?'good':lvl<6?'warn':'bad');
-  $('#saV').textContent=under; $('#rsA').className='ro '+(under===0?'good':under<6?'warn':'bad');
-  const marina=spots.find(s=>s.tag==='marina'), tower=spots.find(s=>s.tag==='tower');
-  $('#smV').textContent=lvl>=marina.t?'under water':'dry'; $('#rsM').className='ro '+(lvl>=marina.t?'bad':'good');
-  $('#stV').textContent=lvl>=tower.t?'flooded':'dry'; $('#rsT').className='ro '+(lvl>=tower.t?'bad':'good');
-  const heldOut=shore.closed?shore.event:0;
-  $('#huds').innerHTML='Bay at <b>'+lvl.toFixed(1)+' ft</b> above today’s high tide'+(shore.closed?('<br>wall closed at slack: <b>'+heldOut.toFixed(1)+' ft</b> of surge and king tide held out'+(shore.event>22?'<br><span class="warn">event above the 22 ft ceiling: some overtopping</span>':'')):'<br>wall open: surge comes straight in')+'<br>permanent rise still reaches the Bay: <b>'+shore.slr.toFixed(1)+' ft</b>';
-}
-$('#slr').oninput=e=>{shore.slr=+e.target.value;drawShore();};
-$('#event').oninput=e=>{shore.event=+e.target.value;drawShore();};
-$('#sOpen').onclick=()=>{shore.closed=false;press('#sOpen',1);press('#sClosed',0);drawShore();};
-$('#sClosed').onclick=()=>{shore.closed=true;press('#sOpen',0);press('#sClosed',1);drawShore();};
-function preset(slr,ev){ shore.slr=slr; shore.event=ev; $('#slr').value=slr; $('#event').value=ev; drawShore(); }
-$('#sKing').onclick=()=>preset(0,1.5); $('#sToday').onclick=()=>preset(0,3.8); $('#s1983').onclick=()=>preset(0,2.9); $('#s2050').onclick=()=>preset(1.0,3.8); $('#s2100').onclick=()=>preset(6.6,3.8);
+function tideBase(h){ return 1.9*Math.cos(2*Math.PI*h/12.42)+1.1*Math.cos(2*Math.PI*h/23.93+0.9)+0.4*Math.cos(2*Math.PI*h/25.82+2.1); }
+// feet above MHHW: base tide swings around 0 at its highs; shift so the ordinary high sits near 0
+function oceanAt(h,ev){ const base=tideBase(h)-2.6; const s=EVENTS[ev].surge; const surge=s*Math.exp(-Math.pow((h-31)/5,2)); return {tide:base,surge,total:base+surge}; }
 
-
-/* ========== VIEW 4: THE SECTION ========== */
-const cx=$('#cx'), c4=cx.getContext('2d'); const XW=cx.width, XH=cx.height;
-const sec={tide:8, closed:true, lever:Math.PI/2, boat:'ocean', chamber:'ocean', level:0, target:0, t:0};
-// vertical scale: 0 ft at mean water, +30 top, -320 bottom
-const yOf=ft=>60+(XH-100)*(30-ft)/350;
-const wallL=XW*0.47, wallR=XW*0.53, chL=XW*0.53, chR=XW*0.66;
-function stepSect(dt){
-  sec.t+=dt;
-  const lt=sec.closed?Math.PI/2:0; const canTurn=Math.abs(sec.tide)<=1;
-  if(Math.abs(sec.lever-lt)>0.001){ if(canTurn){ const k=Math.sign(lt-sec.lever); sec.lever+=k*dt*1.6; if((k>0&&sec.lever>lt)||(k<0&&sec.lever<lt)) sec.lever=lt; } }
-  // chamber water moves toward target
-  const tgt=sec.chamber==='ocean'?sec.tide:0;
-  const k=Math.sign(tgt-sec.level); if(Math.abs(tgt-sec.level)>0.05) sec.level+=k*dt*3; else sec.level=tgt;
+/* ---------- THE WHY ---------- */
+const cw=$('#cw'), c1=cw.getContext('2d'); const W=cw.width,H=cw.height;
+const why={ev:'normal',years:0,proj:'mid',auto:false,h:0,playing:false,cache:null};
+function compute(){
+  const pts=[]; for(let i=0;i<=480;i++){ const h=i/10; pts.push({h,o:oceanAt(h,why.ev)}); }
+  const slacks=[]; for(let i=1;i<pts.length-1;i++){ const a=pts[i-1].o.total,b=pts[i].o.total,c=pts[i+1].o.total; if((b>=a&&b>=c)||(b<=a&&b<=c)) slacks.push({h:pts[i].h,high:b>=a}); }
+  let peakI=0; pts.forEach((p,i)=>{ if(p.o.total>pts[peakI].o.total) peakI=i; }); const peakH=pts[peakI].h;
+  let closeAt=null, openAt=null;
+  if(why.auto && EVENTS[why.ev].surge>0){ const before=slacks.filter(s=>s.h<peakH-0.5); closeAt=before.length?before[before.length-1].h:null; const after=slacks.filter(s=>s.h>peakH+0.5); openAt=after.length?after[0].h:null; }
+  const slr=slrFor(why.years,why.proj);
+  let bay=pts[0].o.total, series=[], bayPeak=-99;
+  for(const p of pts){ const closed=(closeAt!==null&&p.h>=closeAt&&(openAt===null||p.h<openAt)); if(!closed) bay=p.o.total; series.push({h:p.h,ocean:p.o.total+slr,bay:bay+slr,closed}); bayPeak=Math.max(bayPeak,bay+slr); }
+  why.cache={series,slacks,closeAt,openAt,peakH,slr,bayPeak,oceanPeak:pts[peakI].o.total+slr};
+  return why.cache;
 }
-function drawSect(){
-  c4.clearRect(0,0,XW,XH);
-  c4.fillStyle='#F7F8F8'; c4.fillRect(0,0,XW,XH);
-  const oc=sec.tide, by=0;
-  // seabed
-  c4.fillStyle='#B9AE95'; c4.beginPath(); c4.moveTo(0,XH); c4.lineTo(0,yOf(-140)); c4.quadraticCurveTo(XW*0.35,yOf(-330),wallL,yOf(-320)); c4.lineTo(wallR,yOf(-320)); c4.quadraticCurveTo(XW*0.75,yOf(-300),XW,yOf(-90)); c4.lineTo(XW,XH); c4.closePath(); c4.fill();
-  // water ocean side
-  c4.fillStyle=css('--ocean'); c4.beginPath(); c4.moveTo(0,yOf(oc)); c4.lineTo(wallL,yOf(oc)); c4.lineTo(wallL,yOf(-320)); c4.quadraticCurveTo(XW*0.35,yOf(-330),0,yOf(-140)); c4.closePath(); c4.fill();
-  // water bay side (right of chamber)
-  c4.fillStyle=css('--bay'); c4.beginPath(); c4.moveTo(chR,yOf(by)); c4.lineTo(XW,yOf(by)); c4.lineTo(XW,yOf(-90)); c4.quadraticCurveTo(XW*0.75,yOf(-300),wallR,yOf(-320)); c4.lineTo(chR,yOf(-320)); c4.closePath(); c4.fill();
-  // chamber water
-  c4.fillStyle='rgba(111,157,184,.9)'; c4.fillRect(chL,yOf(sec.level),chR-chL,yOf(-320)-yOf(sec.level));
-  // wall body (to seabed), levers band top 50 ft
-  c4.fillStyle=css('--lever'); c4.fillRect(wallL,yOf(-50),wallR-wallL,yOf(-320)-yOf(-50));
-  // lever band: 5 levers drawn as tilting plates
-  const n=5, bandTop=yOf(30), bandBot=yOf(-50), ph=(bandBot-bandTop)/n;
-  for(let i=0;i<n;i++){ const cy=bandTop+ph*(i+0.5), len=ph*0.9; const a=sec.lever; const dx=Math.sin(a)*4+Math.cos(a)*len/2, dy=Math.sin(a)*len/2;
-    c4.save(); c4.translate((wallL+wallR)/2,cy); c4.strokeStyle=css('--orange'); c4.lineWidth=8; c4.lineCap='round'; c4.beginPath(); c4.moveTo(-Math.cos(a)*len/2,-Math.sin(a)*len/2); c4.lineTo(Math.cos(a)*len/2,Math.sin(a)*len/2); c4.stroke(); c4.restore(); }
-  // chamber walls and gates
-  c4.fillStyle=css('--lever'); c4.fillRect(chR-8,yOf(30),8,yOf(-320)-yOf(30)); // far wall
-  const gateOceanOpen=(sec.chamber==='ocean'&&Math.abs(sec.level-oc)<0.1&&(sec.boat==='entering'||sec.boat==='ocean'));
-  const gateBayOpen=(sec.chamber==='bay'&&Math.abs(sec.level-by)<0.1&&(sec.boat==='leaving'||sec.boat==='bay'));
-  c4.fillStyle=css('--orange'); if(!gateOceanOpen) c4.fillRect(wallR,yOf(30),6,yOf(-60)-yOf(30)); if(!gateBayOpen) c4.fillRect(chR-8,yOf(30),8,yOf(-60)-yOf(30));
-  c4.fillStyle=css('--lever'); c4.fillRect(chL,yOf(-60),chR-chL,yOf(-320)-yOf(-60)); // chamber floor block
-  // boat
-  let bx; const bl=Math.min(sec.level,oc);
-  if(sec.boat==='ocean') bx=wallL-120; else if(sec.boat==='chamber'||sec.boat==='entering'||sec.boat==='leaving') bx=(chL+chR)/2; else bx=chR+120;
-  const byY = sec.boat==='ocean'?yOf(oc): (sec.boat==='bay'?yOf(by):yOf(sec.level));
-  c4.fillStyle='#fff'; c4.strokeStyle=css('--ink'); c4.lineWidth=2; c4.beginPath(); c4.moveTo(bx-40,byY-2); c4.lineTo(bx+40,byY-2); c4.lineTo(bx+28,byY+16); c4.lineTo(bx-28,byY+16); c4.closePath(); c4.fill(); c4.stroke();
-  c4.fillRect(bx-10,byY-26,20,24); c4.strokeRect(bx-10,byY-26,20,24);
-  // labels + scale
-  c4.fillStyle='rgba(31,36,39,.8)'; c4.font='500 13px "IBM Plex Mono", monospace';
-  c4.fillText('PACIFIC', 24, yOf(oc)-10); c4.fillText('THE BAY', XW-96, yOf(by)-10); c4.fillText('chamber', chL+8, yOf(28)+14);
-  c4.fillText('levers, top 50 ft', wallR+14, yOf(-10)); c4.fillText('wall to the seabed', wallR+14, yOf(-200));
-  c4.font='11px "IBM Plex Mono", monospace'; [30,0,-50,-100,-200,-300].forEach(f=>{ c4.fillStyle='rgba(31,36,39,.5)'; c4.fillRect(XW-42,yOf(f),6,1); c4.fillText((f>0?'+':'')+f, XW-34, yOf(f)+4); });
-  // readouts
-  $('#xtideOut').textContent=sec.tide.toFixed(1)+' ft';
-  $('#xlU').textContent=sec.closed?(Math.abs(sec.tide)>1?'closed, holding the head':'closed, slack water'):'open, flow passes';
-  const st_=sec.chamber==='ocean'?'at ocean level':'at Bay level';
-  $('#xcV').textContent=Math.abs(sec.level-(sec.chamber==='ocean'?oc:by))<0.1?st_:'moving'; $('#xcU').textContent=gateOceanOpen?'ocean gate open':(gateBayOpen?'Bay gate open':'gates shut on both sides');
-  const bmap={ocean:['outside','waiting on the ocean side'],entering:['entering','through the ocean gate'],chamber:['in the chamber','floating with the water'],leaving:['leaving','through the Bay gate'],bay:['through','on the Bay side']};
-  $('#xbV').textContent=bmap[sec.boat][0]; $('#xbU').textContent=bmap[sec.boat][1];
-  $('#hudx').innerHTML='head <b>'+sec.tide.toFixed(1)+' ft</b> · chamber water <b>'+sec.level.toFixed(1)+' ft</b>'+(sec.closed?'':'<br>levers open: the elevator is not needed, boats pass the gaps');
+function at(R,h){ const i=Math.max(0,Math.min(R.series.length-1,Math.round(h*10))); return R.series[i]; }
+function drawWhy(){
+  const R=why.cache||compute(); const cur=at(R,why.h);
+  c1.clearRect(0,0,W,H);
+  /* chart, top 300px */
+  const L=64,Rr=24,T=54,B=300; const x=h=>L+(W-L-Rr)*h/48; const ymin=-8,ymax=Math.max(8,R.oceanPeak+2); const y=v=>B-(B-T)*(v-ymin)/(ymax-ymin);
+  c1.fillStyle='#F7F8F8'; c1.fillRect(0,0,W,B+40);
+  c1.strokeStyle='rgba(31,36,39,.12)'; c1.lineWidth=1; c1.font='11px "IBM Plex Mono", monospace'; c1.fillStyle='rgba(31,36,39,.6)';
+  for(let v=-8;v<=ymax;v+=2){ c1.beginPath(); c1.moveTo(L,y(v)); c1.lineTo(W-Rr,y(v)); c1.stroke(); c1.fillText((v>0?'+':'')+v+' ft', 12, y(v)+4); }
+  for(let h=0;h<=48;h+=6){ c1.beginPath(); c1.moveTo(x(h),T); c1.lineTo(x(h),B); c1.stroke(); c1.fillText(h%24===0?('day '+(h/24+1)):(h%24)+'h', x(h)-8, B+16); }
+  // slack windows, bright
+  R.slacks.forEach(s=>{ const w=x(1.4)-x(0); c1.fillStyle='rgba(92,140,90,.22)'; c1.fillRect(x(s.h)-w/2,T,w,B-T); c1.fillStyle=css('--moss'); c1.font='500 10px "IBM Plex Mono", monospace'; c1.fillText('SLACK', x(s.h)-16, T-6); });
+  if(R.closeAt!==null){ c1.fillStyle='rgba(240,74,0,.12)'; c1.fillRect(x(R.closeAt),T,x(R.openAt??48)-x(R.closeAt),B-T); c1.fillStyle=css('--orange'); c1.font='500 12px "IBM Plex Mono", monospace'; c1.fillText('CLOSED', x(R.closeAt)+6, T+16); }
+  // MHHW line and thresholds
+  c1.strokeStyle='rgba(31,36,39,.35)'; c1.setLineDash([4,5]); c1.beginPath(); c1.moveTo(L,y(0)); c1.lineTo(W-Rr,y(0)); c1.stroke(); c1.setLineDash([]); c1.fillStyle='rgba(31,36,39,.6)'; c1.fillText('today’s high tide', W-Rr-120, y(0)-4);
+  [[1,'Embarcadero floods'],[2,'Mission Bay, SFO'],[5,'seawall crest'],[9,'SoMa, the tower']].forEach(([v,l])=>{ if(v<ymax){ c1.strokeStyle='rgba(184,50,42,.35)'; c1.setLineDash([2,6]); c1.beginPath(); c1.moveTo(L,y(v)); c1.lineTo(W-Rr,y(v)); c1.stroke(); c1.setLineDash([]); c1.fillStyle='rgba(184,50,42,.8)'; c1.fillText(l, L+6, y(v)-3); } });
+  // ocean and bay lines
+  c1.beginPath(); R.series.forEach((p,i)=>{ i?c1.lineTo(x(p.h),y(p.ocean)):c1.moveTo(x(p.h),y(p.ocean)); }); c1.strokeStyle=css('--deep'); c1.lineWidth=2.5; c1.stroke();
+  c1.beginPath(); R.series.forEach((p,i)=>{ i?c1.lineTo(x(p.h),y(p.bay)):c1.moveTo(x(p.h),y(p.bay)); }); c1.strokeStyle=css('--orange'); c1.lineWidth=3.5; c1.stroke();
+  // playhead
+  c1.strokeStyle=css('--ink'); c1.lineWidth=2; c1.beginPath(); c1.moveTo(x(why.h),T-10); c1.lineTo(x(why.h),B); c1.stroke();
+  c1.fillStyle=css('--ink'); c1.beginPath(); c1.arc(x(why.h),y(cur.bay),6,0,Math.PI*2); c1.fill();
+  c1.fillStyle=css('--deep'); c1.fillRect(W-330,T-30,14,4); c1.fillStyle='rgba(31,36,39,.8)'; c1.fillText('ocean', W-312,T-24); c1.fillStyle=css('--orange'); c1.fillRect(W-250,T-30,14,4); c1.fillText('Bay', W-232,T-24);
+  /* map, bottom */
+  const oy=B+40; const M=H-oy; const sx=v=>v*W/1200, sy=v=>oy+(v-120)*M/(760-120);
+  c1.fillStyle=css('--land'); c1.fillRect(0,oy,W,M);
+  c1.fillStyle=css('--bay'); c1.beginPath();
+  [[0,300],[380,270],[420,220],[560,210],[600,300],[640,360],[600,470],[560,520],[700,650],[940,740],[900,760],[640,760],[480,600],[450,520],[440,420],[390,330],[300,300],[0,330]].forEach((p,i)=>{ i?c1.lineTo(sx(p[0]),sy(p[1])):c1.moveTo(sx(p[0]),sy(p[1])); }); c1.closePath(); c1.fill();
+  c1.beginPath(); [[420,220],[470,120],[560,80],[620,100],[560,170],[560,210]].forEach((p,i)=>{ i?c1.lineTo(sx(p[0]),sy(p[1])):c1.moveTo(sx(p[0]),sy(p[1])); }); c1.closePath(); c1.fill();
+  c1.strokeStyle=css('--orange'); c1.lineWidth=4; c1.beginPath(); c1.moveTo(sx(300),sy(272)); c1.lineTo(sx(330),sy(300)); c1.stroke();
+  c1.strokeStyle=cur.closed?css('--lever'):'rgba(43,47,51,.35)'; c1.lineWidth=cur.closed?6:3; c1.setLineDash(cur.closed?[]:[5,6]); c1.beginPath(); c1.moveTo(sx(282),sy(286)); c1.lineTo(sx(318),sy(318)); c1.stroke(); c1.setLineDash([]);
+  const lvl=cur.bay; let under=0;
+  spots.forEach(s=>{ const wet=lvl>=s.t; if(wet) under++; const depth=Math.max(0,lvl-s.t); const r=s.r*(wet?1+Math.min(.6,depth/8):1)*0.9;
+    c1.beginPath(); c1.arc(sx(s.x),sy(s.y),r,0,Math.PI*2); c1.fillStyle=wet?'rgba(47,110,158,'+Math.min(.85,.35+depth/10)+')':'rgba(255,255,255,.55)'; c1.fill(); c1.strokeStyle=wet?css('--flood'):'rgba(31,36,39,.35)'; c1.lineWidth=wet?2:1; c1.stroke();
+    c1.fillStyle='rgba(31,36,39,.85)'; c1.font=(wet?'500 ':'')+'11px "IBM Plex Mono", monospace'; c1.fillText(s.n+' ('+s.t+' ft)', sx(s.x)+r+5, sy(s.y)+4); });
+  c1.fillStyle='rgba(31,36,39,.75)'; c1.font='500 12px "IBM Plex Mono", monospace'; c1.fillText('PACIFIC', 30, sy(200)); c1.fillText('the Gate', sx(236), sy(318)); c1.fillText('SOUTH BAY', sx(760), sy(600));
+  /* banner + readouts */
+  const nearSlack=R.slacks.find(s=>Math.abs(s.h-why.h)<=0.7); const next=R.slacks.find(s=>s.h>why.h);
+  const bn=$('#banner');
+  if(cur.closed && !nearSlack){ bn.textContent='Closed. Levers will not turn under load.'; bn.className='banner on hold'; }
+  else if(nearSlack){ bn.textContent=(cur.closed?'Slack water. Levers can reopen.':'Slack water. Turn now.'); bn.className='banner on'; }
+  else if(lvl>=5){ bn.textContent='Over the seawall.'; bn.className='banner on bad'; }
+  else bn.className='banner';
+  $('#nextV').textContent=next?((next.h-why.h).toFixed(1)+' h'):'—'; $('#nextU').textContent=next?(next.high?'at the high, then it turns':'at the low, then it turns'):'four a day, about six hours apart';
+  $('#bayV').textContent=lvl.toFixed(1); $('#rBay').className='ro '+(lvl<1?'good':lvl<5?'warn':'bad');
+  $('#floodV').textContent=under; $('#rFlood').className='ro '+(under===0?'good':under<8?'warn':'bad');
+  $('#peakV').textContent=R.bayPeak.toFixed(1); $('#rPeak').className='ro '+(R.bayPeak<2?'good':R.bayPeak<5?'warn':'bad'); $('#peakU').textContent=(R.closeAt!==null?'Bay, held; ocean peaks at '+R.oceanPeak.toFixed(1):'Bay, wall never closed');
+  $('#hudw').innerHTML='<b>'+EVENTS[why.ev].label+'</b> · +'+R.slr.toFixed(1)+' ft rise ('+why.years+' yrs, '+why.proj+')<br>ocean <b>'+cur.ocean.toFixed(1)+' ft</b> · Bay <b>'+cur.bay.toFixed(1)+' ft</b> · wall <b>'+(cur.closed?'closed':'open')+'</b>';
+  $('#scrubOut').textContent=why.h.toFixed(1)+' h'; $('#scrub').value=why.h;
 }
-$('#xtide').oninput=e=>{sec.tide=+e.target.value;};
-$('#xOpen').onclick=()=>{sec.closed=false;press('#xOpen',1);press('#xClosed',0);};
-$('#xClosed').onclick=()=>{sec.closed=true;press('#xOpen',0);press('#xClosed',1);};
-$('#xIn').onclick=()=>{ sec.chamber='ocean'; sec.boat='entering'; setTimeout(()=>{ if(sec.boat==='entering') sec.boat='chamber'; },900); };
-$('#xDown').onclick=()=>{ if(sec.boat==='chamber'||sec.boat==='entering') sec.chamber='bay'; };
-$('#xUp').onclick=()=>{ if(sec.boat==='chamber'||sec.boat==='leaving') sec.chamber='ocean'; };
-$('#xOut').onclick=()=>{ if(sec.boat==='chamber' && sec.chamber==='bay' && Math.abs(sec.level)<0.1){ sec.boat='leaving'; setTimeout(()=>{ sec.boat='bay'; },900); } };
-
-/* ---------- loop ---------- */
 let last=performance.now();
-function tick(now){ const dt=Math.min(.05,(now-last)/1000); last=now; if($('#vWall').classList.contains('on')){ stepWall(dt); drawWall(); readWall(); } if($('#vSect').classList.contains('on')){ stepSect(dt); drawSect(); } requestAnimationFrame(tick); }
-drawClock(); drawShore(); readWall(); requestAnimationFrame(tick);
+function tick(now){ const dt=Math.min(.05,(now-last)/1000); last=now; if(why.playing){ why.h+=dt*(reduced?0:4); if(why.h>=48){ why.h=48; why.playing=false; $('#wPlay').textContent='Play two days'; } } if($('#vWhy').classList.contains('on')) drawWhy(); requestAnimationFrame(tick); }
+function setEv(e){ why.ev=e; ['#eNormal','#eKing','#e1983','#e2026'].forEach(id=>press(id,false)); press({normal:'#eNormal',king:'#eKing',r1983:'#e1983',s2026:'#e2026'}[e],true); compute(); }
+$('#eNormal').onclick=()=>setEv('normal'); $('#eKing').onclick=()=>setEv('king'); $('#e1983').onclick=()=>setEv('r1983'); $('#e2026').onclick=()=>setEv('s2026');
+$('#years').oninput=e=>{ why.years=+e.target.value; $('#yearsOut').textContent=why.years+' years, +'+slrFor(why.years,why.proj).toFixed(1)+' ft'; compute(); };
+$('#scrub').oninput=e=>{ why.h=+e.target.value; why.playing=false; $('#wPlay').textContent='Play two days'; };
+$('#wPlay').onclick=()=>{ if(why.playing){ why.playing=false; $('#wPlay').textContent='Play two days'; } else { if(why.h>=48) why.h=0; why.playing=true; $('#wPlay').textContent='Pause'; } };
+$('#wNever').onclick=()=>{ why.auto=false; press('#wNever',1); press('#wAuto',0); compute(); };
+$('#wAuto').onclick=()=>{ why.auto=true; press('#wNever',0); press('#wAuto',1); compute(); };
+$('#pMid').onclick=()=>{ why.proj='mid'; press('#pMid',1); press('#pHigh',0); $('#years').oninput({target:$('#years')}); };
+$('#pHigh').onclick=()=>{ why.proj='high'; press('#pMid',0); press('#pHigh',1); $('#years').oninput({target:$('#years')}); };
+
+/* ---------- THE HOW ---------- */
+const ch=$('#ch'), c2=ch.getContext('2d'); const HW=ch.width, HH=ch.height;
+const feats=[
+  {id:'wingN',x:150,y:420,w:250,h:200,name:'North wing, Marin side',what:'Permanent wall from the Marin headland about a third of the way out. Nothing moves. Stationary uses live here: aquaculture pens in cold moving water, and the healing side.',facts:[['1,000+ ft','of fixed wall, each side, illustrative'],['50 to 55 °F','Gate water, year round'],['hyperbaric','wound care with pressure and cold to hand']],src:'Author, fourth pass; NOAA water temperature at the Gate is typically 50 to 58 °F.'},
+  {id:'wingS',x:800,y:420,w:250,h:200,name:'South wing, city side',what:'The matching permanent wing off the Presidio. Tourism, the Faraday pod, the cold-compute intake. The lock sits against it.',facts:[['cold compute','seawater cooling for data centers'],['Faraday pod','a week off the spectrum, rentable'],['tourism','stay inside the wall, on the water']],src:'Author, second and fourth passes. Seawater cooling is used at scale by data centers in Finland and Hong Kong.'},
+  {id:'middle',x:400,y:470,w:400,h:150,name:'The working middle: apertures and turbines',what:'Open almost all the time so the tide, the fish, and the salt move as they always have. Each aperture is a ring with a turbine fin through it. The fins twist with the strength of the tide and tighten at slack water when a surge is coming.',facts:[['2.5 bn m³','through the Gate every six hours'],['tens of MW','average tidal power, published estimates'],['26 units','of 90 ft across a 2,300 ft middle, illustrative']],src:'Bay Crossings on Golden Gate tidal energy; author, fourth pass.'},
+  {id:'band',x:400,y:400,w:400,h:70,name:'The lever band, top 50 feet',what:'Only the top band moves. Bridge-width plates, stacked, that twist open with the flow or closed across it. They only turn at slack water, when the two sides are level and there is nothing to fight.',facts:[['90 ft','one lever, the width of the deck'],['22 ft','design ceiling of head it holds'],['4 a day','slack waters, the turning windows']],src:'Author, second and third passes; bridge dimensions, Golden Gate Bridge district.'},
+  {id:'lock',x:760,y:480,w:60,h:130,name:'The lock',what:'One chamber, against the city wing. When the band is closed and the ocean stands higher than the Bay, a boat enters from the high side, the chamber drains to the low side, the far gate opens. An elevator that uses the water to float the boat. Everything else waits for slack.',facts:[['1 or 2','chambers, the author says, is plenty'],['0 pumps','water does the lifting'],['schedule','boats come in at low tide otherwise']],src:'Author, second and fourth passes.'},
+  {id:'bridge',x:100,y:120,w:1000,h:110,name:'The bridge stays the bridge',what:'Nothing on the deck changes. The barrier is below and beside it, reinforcing the bridge rather than competing with it. Seen from the city, the wall reads as a second horizon under the first.',facts:[['4,200 ft','main span'],['8,980 ft','whole bridge'],['377 ft','deepest water below']],src:'Golden Gate Bridge district; Wikipedia, Golden Gate.'},
+  {id:'econ',x:1060,y:300,w:120,h:90,name:'The economics',what:'The city already plans to spend on the shoreline. The comparison for any barrier is the Army Corps plan for 7.5 miles of seawall, and what it protects.',facts:[['$17.8 bn','Army Corps plan, 7.5 miles, 2026'],['167,300','jobs in the city’s flood zone'],['37,200','residents in that zone']],src:'SF Port and Army Corps flood study; SF Planning vulnerability assessment. Tidal revenue: 40 MW average is about 350 GWh a year, about 35 million dollars at 10 cents, illustrative.'}
+];
+let sel=null;
+function drawHow(){
+  c2.clearRect(0,0,HW,HH);
+  c2.fillStyle='#EAF0F4'; c2.fillRect(0,0,HW,HH);
+  // headlands
+  c2.fillStyle=css('--land'); c2.beginPath(); c2.moveTo(0,HH); c2.lineTo(0,300); c2.quadraticCurveTo(80,320,150,420); c2.lineTo(150,HH); c2.closePath(); c2.fill();
+  c2.beginPath(); c2.moveTo(HW,HH); c2.lineTo(HW,330); c2.quadraticCurveTo(1120,360,1050,420); c2.lineTo(1050,HH); c2.closePath(); c2.fill();
+  // water
+  c2.fillStyle=css('--ocean'); c2.fillRect(150,400,900,HH-400);
+  // seabed
+  c2.fillStyle='#B9AE95'; c2.beginPath(); c2.moveTo(150,HH); c2.lineTo(150,560); c2.quadraticCurveTo(600,660,1050,560); c2.lineTo(1050,HH); c2.closePath(); c2.fill();
+  // wall body
+  c2.fillStyle=css('--lever'); c2.fillRect(150,470,900,140);
+  // wings solid highlight
+  c2.fillStyle='rgba(43,47,51,1)'; c2.fillRect(150,400,250,210); c2.fillRect(800,400,250,210);
+  // middle: apertures
+  for(let i=0;i<9;i++){ const cx=420+i*45, cy=535; c2.strokeStyle='rgba(255,255,255,.75)'; c2.lineWidth=3; c2.beginPath(); c2.arc(cx,cy,16,0,Math.PI*2); c2.stroke(); c2.beginPath(); c2.moveTo(cx-14,cy); c2.lineTo(cx+14,cy); c2.stroke(); }
+  // lever band
+  for(let i=0;i<9;i++){ c2.fillStyle=css('--orange'); c2.fillRect(404+i*44,408,38,54); }
+  // lock
+  c2.fillStyle='rgba(240,74,0,.25)'; c2.fillRect(760,480,60,130); c2.strokeStyle=css('--orange'); c2.lineWidth=2; c2.strokeRect(760,480,60,130);
+  // bridge: towers and deck
+  c2.strokeStyle=css('--orange'); c2.lineWidth=14; c2.beginPath(); c2.moveTo(330,120); c2.lineTo(330,400); c2.moveTo(870,120); c2.lineTo(870,400); c2.stroke();
+  c2.lineWidth=8; c2.beginPath(); c2.moveTo(100,230); c2.lineTo(1100,230); c2.stroke();
+  c2.lineWidth=3; c2.beginPath(); c2.moveTo(100,150); c2.quadraticCurveTo(215,235,330,120); c2.quadraticCurveTo(600,300,870,120); c2.quadraticCurveTo(985,235,1100,150); c2.stroke();
+  for(let x=120;x<1100;x+=40){ const yc = x<330? (150+ (230-150)*(1-Math.pow((330-x)/230,2))) : x<870? (120+ (300-120)*(1-Math.pow(Math.abs(x-600)/270,2))) : (150+(230-150)*(1-Math.pow((x-870)/230,2))); c2.lineWidth=1; c2.beginPath(); c2.moveTo(x,Math.min(yc,230)); c2.lineTo(x,230); c2.stroke(); }
+  // econ chip
+  c2.fillStyle='#fff'; c2.strokeStyle=css('--line'); c2.lineWidth=1; c2.fillRect(1060,300,120,90); c2.strokeRect(1060,300,120,90); c2.fillStyle=css('--ink'); c2.font='500 12px "IBM Plex Mono", monospace'; c2.fillText('ECONOMICS', 1070,322); c2.font='11px "IBM Plex Mono", monospace'; c2.fillStyle='rgba(31,36,39,.7)'; c2.fillText('$17.8 bn', 1070,345); c2.fillText('seawall plan', 1070,360); c2.fillText('click', 1070,380);
+  // labels
+  c2.fillStyle='rgba(31,36,39,.85)'; c2.font='500 12px "IBM Plex Mono", monospace';
+  c2.fillText('MARIN', 40, 290); c2.fillText('SAN FRANCISCO', 1070, 320-30); c2.fillText('north wing', 180,392); c2.fillText('south wing', 830,392); c2.fillText('lever band, top 50 ft', 404,398); c2.fillText('apertures and turbines', 420,585); c2.fillText('lock', 768,500); c2.fillText('seabed', 560,640);
+  // selection
+  if(sel){ c2.strokeStyle=css('--moss'); c2.lineWidth=3; c2.setLineDash([6,4]); c2.strokeRect(sel.x,sel.y,sel.w,sel.h); c2.setLineDash([]); }
+}
+ch.addEventListener('click',e=>{ const r=ch.getBoundingClientRect(); const x=(e.clientX-r.left)*HW/r.width, y=(e.clientY-r.top)*HH/r.height;
+  const hit=feats.find(f=>x>=f.x&&x<=f.x+f.w&&y>=f.y&&y<=f.y+f.h); if(!hit) return; sel=hit; drawHow();
+  $('#panel').innerHTML='<h3>'+hit.name+'</h3><p>'+hit.what+'</p><div class="facts">'+hit.facts.map(f=>'<div class="fact"><b>'+f[0]+'</b>'+f[1]+'</div>').join('')+'</div><div class="src">'+hit.src+'</div>';
+  $('#hudh').textContent=hit.name; });
+
+compute(); drawWhy(); requestAnimationFrame(tick);
 })();
 </script>
 </body>

@@ -47,3 +47,13 @@ I mean, just one fairly large. Okay, so if a thousand feet is solid, always, nev
 "That's not even the worst of it. I have been in the past driving to Mill Valley, and I've gotten off of the road, and basically had my car get off the freeway and go up to halfway up the door in a puddle, slash not the puddle, the Bay. Just trying to get from the exit for Mill Valley and Marin City towards Tam Junction."
 
 Editor's note: that is the Manzanita area of Highway 101 at the Mill Valley and Marin City exit, which floods on ordinary king tides today.
+
+## Fifth pass, same night: what the page should say
+
+Dictated by the author, 2026-09-18, on seeing the first models. Verbatim, transcription noise only cleaned.
+
+"The whole thing is that you go up and down, and you can see, okay, slack water. That's when the levers turn. It kind of has to be bigger, brighter, like, turn it, slack water. So it has to be some sort of anticipation, right? Normal tide, normal tide, slack water, turns. And how much time is that? What time of day? How often does that happen? You need to know, right? And then when it's closed, what does it say? They won't turn.
+
+You have to have a view like NOAA has. Either you're focusing on the tide and what it does, going up and down, and what happens at the same time, how much of the city gets flooded, the damage around the Bay shores. If you click on a king tide, if you click on a storm surge, if you click on an example, the eighty-something flood or the January flood. But then you can say, now add ten years, the sea level being a little bit higher, what happens. Add twenty years. Add the storm surge and the king tide and the twenty years, what happens. That's one view. That's the why.
+
+The other view is how it would work. Different ways to permit the flow of water, the transportation of ships and shipping and wildlife, and then to be able to close it. How many tides are there? When are the tides? How much water is actually moving? What does that equate to in terms of electrical production? What is the temperature, and how does that help with cooling for computers? If you had the Golden Gate Bridge looking very much like what it looks like, and you could click on different features: here's where it's doing transit, here's where it's doing energy generation, here's where it's generating tourism, here's where the Faraday cage is, here's where the wound care is. Like a schematic. Here's the flood situation, and then here's the utility of this barrier that could be turned on or off. And there could be an economics side of it too."
