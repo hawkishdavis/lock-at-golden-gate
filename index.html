@@ -74,6 +74,7 @@ a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
     <button role="tab" id="tabWall" aria-selected="true">The wall</button>
     <button role="tab" id="tabClock" aria-selected="false">The tide clock</button>
     <button role="tab" id="tabShore" aria-selected="false">The shoreline</button>
+    <button role="tab" id="tabSect" aria-selected="false">The section</button>
   </div>
 
   <!-- VIEW 1: THE WALL -->
@@ -170,6 +171,39 @@ a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
     <p class="note">The map is a sketch, not a survey. Flood thresholds come from the essay's reading of NOAA's Sea Level Rise Viewer: about 2 feet floods Mission Bay, SFO and OAK runways, Alameda, Foster City, Alviso; higher water reaches the Embarcadero, the Marina, and the financial district. The wall, when closed at slack, holds the Bay at the level it closed at, up to a 22 foot design ceiling. Everything here is illustrative.</p>
   </div>
 
+
+  <!-- VIEW 4: THE SECTION -->
+  <div class="view" id="vSect">
+    <div class="stage">
+      <canvas id="cx" width="1200" height="620" aria-label="Cross-section of the Gate: a wall to the seabed, levers in the top fifty feet, and a boat elevator chamber"></canvas>
+      <div class="hud" id="hudx"></div>
+      <div class="hint">one wall, not a double-sided lock</div>
+    </div>
+    <div class="controls">
+      <div class="ctl">
+        <label for="xtide">Ocean above Bay <output id="xtideOut">8.0 ft</output></label>
+        <input type="range" id="xtide" min="-4" max="22" step="0.5" value="8">
+      </div>
+      <div class="modes">
+        <span class="lbl">Levers</span>
+        <button id="xOpen" aria-pressed="false">Open</button>
+        <button id="xClosed" class="quiet" aria-pressed="true">Closed</button>
+        <span class="lbl" style="margin-left:10px">Boat elevator</span>
+        <button id="xIn">Boat in from the ocean</button>
+        <button id="xDown">Lower to the Bay</button>
+        <button id="xUp">Raise to the ocean</button>
+        <button id="xOut">Boat out to the Bay</button>
+      </div>
+    </div>
+    <div class="readouts">
+      <div class="ro" id="rxW"><div class="k">The wall</div><div class="v" id="xwV">to the seabed</div><div class="u">about 300 feet at the deepest point</div></div>
+      <div class="ro" id="rxL"><div class="k">Levers</div><div class="v" id="xlV">top 50 ft</div><div class="u" id="xlU">closed, holding the head</div></div>
+      <div class="ro" id="rxC"><div class="k">Chamber</div><div class="v" id="xcV">empty</div><div class="u" id="xcU">gates shut on both sides</div></div>
+      <div class="ro" id="rxB"><div class="k">The boat</div><div class="v" id="xbV">outside</div><div class="u" id="xbU">waiting on the ocean side</div></div>
+    </div>
+    <p class="note">Side view, ocean on the left. The wall runs most of the depth; only the top band twists. When the band is closed and there is a head across it, a boat enters the chamber from the high side, the chamber drains until it matches the low side, the far gate opens, and the boat goes on. It is an elevator that uses the water itself to float the boat up or down. Depths and sizes illustrative.</p>
+  </div>
+
   <section>
     <h2>Why levers, not a dam</h2>
     <div class="q">
@@ -206,7 +240,7 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim
 function press(id,on){$(id).setAttribute('aria-pressed',on?'true':'false')}
 
 /* ---------- tabs ---------- */
-const tabs=[['#tabWall','#vWall'],['#tabClock','#vClock'],['#tabShore','#vShore']];
+const tabs=[['#tabWall','#vWall'],['#tabClock','#vClock'],['#tabShore','#vShore'],['#tabSect','#vSect']];
 tabs.forEach(([t,v])=>{ $(t).onclick=()=>{ tabs.forEach(([tt,vv])=>{ $(tt).setAttribute('aria-selected',tt===t?'true':'false'); $(vv).classList.toggle('on',vv===v); }); }; });
 
 /* ========== VIEW 1: THE WALL ========== */
@@ -451,9 +485,76 @@ $('#sClosed').onclick=()=>{shore.closed=true;press('#sOpen',0);press('#sClosed',
 function preset(slr,ev){ shore.slr=slr; shore.event=ev; $('#slr').value=slr; $('#event').value=ev; drawShore(); }
 $('#sToday').onclick=()=>preset(0,7); $('#s2050').onclick=()=>preset(2,9); $('#s2100').onclick=()=>preset(6,12);
 
+
+/* ========== VIEW 4: THE SECTION ========== */
+const cx=$('#cx'), c4=cx.getContext('2d'); const XW=cx.width, XH=cx.height;
+const sec={tide:8, closed:true, lever:Math.PI/2, boat:'ocean', chamber:'ocean', level:0, target:0, t:0};
+// vertical scale: 0 ft at mean water, +30 top, -320 bottom
+const yOf=ft=>60+(XH-100)*(30-ft)/350;
+const wallL=XW*0.47, wallR=XW*0.53, chL=XW*0.53, chR=XW*0.66;
+function stepSect(dt){
+  sec.t+=dt;
+  const lt=sec.closed?Math.PI/2:0; const canTurn=Math.abs(sec.tide)<=1;
+  if(Math.abs(sec.lever-lt)>0.001){ if(canTurn){ const k=Math.sign(lt-sec.lever); sec.lever+=k*dt*1.6; if((k>0&&sec.lever>lt)||(k<0&&sec.lever<lt)) sec.lever=lt; } }
+  // chamber water moves toward target
+  const tgt=sec.chamber==='ocean'?sec.tide:0;
+  const k=Math.sign(tgt-sec.level); if(Math.abs(tgt-sec.level)>0.05) sec.level+=k*dt*3; else sec.level=tgt;
+}
+function drawSect(){
+  c4.clearRect(0,0,XW,XH);
+  c4.fillStyle='#F7F8F8'; c4.fillRect(0,0,XW,XH);
+  const oc=sec.tide, by=0;
+  // seabed
+  c4.fillStyle='#B9AE95'; c4.beginPath(); c4.moveTo(0,XH); c4.lineTo(0,yOf(-140)); c4.quadraticCurveTo(XW*0.35,yOf(-330),wallL,yOf(-320)); c4.lineTo(wallR,yOf(-320)); c4.quadraticCurveTo(XW*0.75,yOf(-300),XW,yOf(-90)); c4.lineTo(XW,XH); c4.closePath(); c4.fill();
+  // water ocean side
+  c4.fillStyle=css('--ocean'); c4.beginPath(); c4.moveTo(0,yOf(oc)); c4.lineTo(wallL,yOf(oc)); c4.lineTo(wallL,yOf(-320)); c4.quadraticCurveTo(XW*0.35,yOf(-330),0,yOf(-140)); c4.closePath(); c4.fill();
+  // water bay side (right of chamber)
+  c4.fillStyle=css('--bay'); c4.beginPath(); c4.moveTo(chR,yOf(by)); c4.lineTo(XW,yOf(by)); c4.lineTo(XW,yOf(-90)); c4.quadraticCurveTo(XW*0.75,yOf(-300),wallR,yOf(-320)); c4.lineTo(chR,yOf(-320)); c4.closePath(); c4.fill();
+  // chamber water
+  c4.fillStyle='rgba(111,157,184,.9)'; c4.fillRect(chL,yOf(sec.level),chR-chL,yOf(-320)-yOf(sec.level));
+  // wall body (to seabed), levers band top 50 ft
+  c4.fillStyle=css('--lever'); c4.fillRect(wallL,yOf(-50),wallR-wallL,yOf(-320)-yOf(-50));
+  // lever band: 5 levers drawn as tilting plates
+  const n=5, bandTop=yOf(30), bandBot=yOf(-50), ph=(bandBot-bandTop)/n;
+  for(let i=0;i<n;i++){ const cy=bandTop+ph*(i+0.5), len=ph*0.9; const a=sec.lever; const dx=Math.sin(a)*4+Math.cos(a)*len/2, dy=Math.sin(a)*len/2;
+    c4.save(); c4.translate((wallL+wallR)/2,cy); c4.strokeStyle=css('--orange'); c4.lineWidth=8; c4.lineCap='round'; c4.beginPath(); c4.moveTo(-Math.cos(a)*len/2,-Math.sin(a)*len/2); c4.lineTo(Math.cos(a)*len/2,Math.sin(a)*len/2); c4.stroke(); c4.restore(); }
+  // chamber walls and gates
+  c4.fillStyle=css('--lever'); c4.fillRect(chR-8,yOf(30),8,yOf(-320)-yOf(30)); // far wall
+  const gateOceanOpen=(sec.chamber==='ocean'&&Math.abs(sec.level-oc)<0.1&&(sec.boat==='entering'||sec.boat==='ocean'));
+  const gateBayOpen=(sec.chamber==='bay'&&Math.abs(sec.level-by)<0.1&&(sec.boat==='leaving'||sec.boat==='bay'));
+  c4.fillStyle=css('--orange'); if(!gateOceanOpen) c4.fillRect(wallR,yOf(30),6,yOf(-60)-yOf(30)); if(!gateBayOpen) c4.fillRect(chR-8,yOf(30),8,yOf(-60)-yOf(30));
+  c4.fillStyle=css('--lever'); c4.fillRect(chL,yOf(-60),chR-chL,yOf(-320)-yOf(-60)); // chamber floor block
+  // boat
+  let bx; const bl=Math.min(sec.level,oc);
+  if(sec.boat==='ocean') bx=wallL-120; else if(sec.boat==='chamber'||sec.boat==='entering'||sec.boat==='leaving') bx=(chL+chR)/2; else bx=chR+120;
+  const byY = sec.boat==='ocean'?yOf(oc): (sec.boat==='bay'?yOf(by):yOf(sec.level));
+  c4.fillStyle='#fff'; c4.strokeStyle=css('--ink'); c4.lineWidth=2; c4.beginPath(); c4.moveTo(bx-40,byY-2); c4.lineTo(bx+40,byY-2); c4.lineTo(bx+28,byY+16); c4.lineTo(bx-28,byY+16); c4.closePath(); c4.fill(); c4.stroke();
+  c4.fillRect(bx-10,byY-26,20,24); c4.strokeRect(bx-10,byY-26,20,24);
+  // labels + scale
+  c4.fillStyle='rgba(31,36,39,.8)'; c4.font='500 13px "IBM Plex Mono", monospace';
+  c4.fillText('PACIFIC', 24, yOf(oc)-10); c4.fillText('THE BAY', XW-96, yOf(by)-10); c4.fillText('chamber', chL+8, yOf(28)+14);
+  c4.fillText('levers, top 50 ft', wallR+14, yOf(-10)); c4.fillText('wall to the seabed', wallR+14, yOf(-200));
+  c4.font='11px "IBM Plex Mono", monospace'; [30,0,-50,-100,-200,-300].forEach(f=>{ c4.fillStyle='rgba(31,36,39,.5)'; c4.fillRect(XW-42,yOf(f),6,1); c4.fillText((f>0?'+':'')+f, XW-34, yOf(f)+4); });
+  // readouts
+  $('#xtideOut').textContent=sec.tide.toFixed(1)+' ft';
+  $('#xlU').textContent=sec.closed?(Math.abs(sec.tide)>1?'closed, holding the head':'closed, slack water'):'open, flow passes';
+  const st_=sec.chamber==='ocean'?'at ocean level':'at Bay level';
+  $('#xcV').textContent=Math.abs(sec.level-(sec.chamber==='ocean'?oc:by))<0.1?st_:'moving'; $('#xcU').textContent=gateOceanOpen?'ocean gate open':(gateBayOpen?'Bay gate open':'gates shut on both sides');
+  const bmap={ocean:['outside','waiting on the ocean side'],entering:['entering','through the ocean gate'],chamber:['in the chamber','floating with the water'],leaving:['leaving','through the Bay gate'],bay:['through','on the Bay side']};
+  $('#xbV').textContent=bmap[sec.boat][0]; $('#xbU').textContent=bmap[sec.boat][1];
+  $('#hudx').innerHTML='head <b>'+sec.tide.toFixed(1)+' ft</b> · chamber water <b>'+sec.level.toFixed(1)+' ft</b>'+(sec.closed?'':'<br>levers open: the elevator is not needed, boats pass the gaps');
+}
+$('#xtide').oninput=e=>{sec.tide=+e.target.value;};
+$('#xOpen').onclick=()=>{sec.closed=false;press('#xOpen',1);press('#xClosed',0);};
+$('#xClosed').onclick=()=>{sec.closed=true;press('#xOpen',0);press('#xClosed',1);};
+$('#xIn').onclick=()=>{ sec.chamber='ocean'; sec.boat='entering'; setTimeout(()=>{ if(sec.boat==='entering') sec.boat='chamber'; },900); };
+$('#xDown').onclick=()=>{ if(sec.boat==='chamber'||sec.boat==='entering') sec.chamber='bay'; };
+$('#xUp').onclick=()=>{ if(sec.boat==='chamber'||sec.boat==='leaving') sec.chamber='ocean'; };
+$('#xOut').onclick=()=>{ if(sec.boat==='chamber' && sec.chamber==='bay' && Math.abs(sec.level)<0.1){ sec.boat='leaving'; setTimeout(()=>{ sec.boat='bay'; },900); } };
+
 /* ---------- loop ---------- */
 let last=performance.now();
-function tick(now){ const dt=Math.min(.05,(now-last)/1000); last=now; if($('#vWall').classList.contains('on')){ stepWall(dt); drawWall(); readWall(); } requestAnimationFrame(tick); }
+function tick(now){ const dt=Math.min(.05,(now-last)/1000); last=now; if($('#vWall').classList.contains('on')){ stepWall(dt); drawWall(); readWall(); } if($('#vSect').classList.contains('on')){ stepSect(dt); drawSect(); } requestAnimationFrame(tick); }
 drawClock(); drawShore(); readWall(); requestAnimationFrame(tick);
 })();
 </script>
