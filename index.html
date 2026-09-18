@@ -68,7 +68,7 @@ a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
 <div class="wrap">
   <div class="eyebrow">The Lock at Golden Gate Bridge · a baby step</div>
   <h1>The <span>Lever Wall</span></h1>
-  <p class="lede">Most of the time it is a bathtub with low walls. Then a storm surge or a king tide comes, the levers twist closed at slack water, and the Bay stops rising. Four ways to look at it: the wall itself, the tide clock that says when it can turn and what the turbines make, the shoreline that does or does not flood, and the section, one wall to the seabed with a band of levers on top.</p>
+  <p class="lede">Most of the time it is a bathtub with low walls. Permanent wings off each headland, a working middle of apertures and turbines that stay open for the tide, and one lock. Then a storm surge or a king tide comes, the apertures tighten at slack water, and the Bay stops rising. Four ways to look at it: the wall itself, the tide clock that says when it can turn and what the turbines make, the shoreline that does or does not flood, and the section, one wall to the seabed with a band of levers on top.</p>
 
   <div class="tabs" role="tablist">
     <button role="tab" id="tabWall" aria-selected="true">The wall</button>
@@ -82,7 +82,7 @@ a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
     <div class="stage">
       <canvas id="cv" width="1200" height="640" aria-label="Plan view of the Golden Gate with a wall of twisting levers across the strait"></canvas>
       <div class="hud" id="hud"></div>
-      <div class="hint">click any lever to twist it · drag on the water to set the tide</div>
+      <div class="hint">click any aperture to close it · drag on the water to set the tide · double-click to rent</div>
     </div>
     <div class="controls">
       <div class="ctl">
@@ -245,7 +245,7 @@ tabs.forEach(([t,v])=>{ $(t).onclick=()=>{ tabs.forEach(([tt,vv])=>{ $(tt).setAt
 
 /* ========== VIEW 1: THE WALL ========== */
 const cv=$('#cv'), ctx=cv.getContext('2d'); const W=cv.width,H=cv.height;
-const N=13, wallX=W*0.52, top=118, bot=H-118, pitch=(bot-top)/N;
+const N=13, wallX=W*0.52, top=118, bot=H-118, midTop=top+(bot-top)/3, midBot=bot-(bot-top)/3-56, pitch=(midBot-midTop)/N;
 const st={tide:0, weld:false, rented:-1, t:0, strain:0, msg:''};
 const levers=[]; for(let i=0;i<N;i++) levers.push({a:0,target:0});
 const parts=[]; for(let i=0;i<300;i++) parts.push({x:Math.random()*W,y:top+Math.random()*(bot-top),s:.6+Math.random()});
@@ -266,6 +266,7 @@ function drawWall(){
   // openness of the whole wall = mean cos(angle)
   const openness=st.weld?0:levers.reduce((s,l)=>s+Math.cos(l.a),0)/N;
   const pass=Math.max(0.06,openness);
+  const midTopL=midTop, midBotL=midBot;
   const dir=dh>=0?1:-1;
   const drive=Math.min(3,Math.abs(dh));
   parts.forEach(p=>{
@@ -273,19 +274,31 @@ function drawWall(){
     // ocean side always moves with the tide; bay side moves only as much as passes the wall
     let v=(reduced?0:1)*(0.5+drive*0.6)*p.s*dir;
     if(!oceanSide) v*=pass;               // calm behind a closed wall
-    if(Math.abs(p.x-wallX)<16 && Math.random()>pass) v=0; // blocked at the wall
+    const inMid=p.y>midTop&&p.y<midBot; if(Math.abs(p.x-wallX)<16 && (!inMid || Math.random()>pass)) v=0; // wings block; the middle passes what the apertures allow
     p.x+=v; if(p.x>W) p.x=0; if(p.x<0) p.x=W;
     ctx.fillStyle='rgba(255,255,255,.75)'; ctx.fillRect(p.x,p.y,2.2,1.4);
   });
-  // levers: angle 0 = open (parallel to flow, drawn horizontal), PI/2 = closed (across, vertical)
+  // permanent wings: about a third off each headland is solid wall, no way no how
+  const wingLen=(bot-top)/3;
+  ctx.fillStyle=css('--lever'); ctx.fillRect(wallX-9,top-6,18,wingLen); ctx.fillRect(wallX-9,bot-wingLen+6,18,wingLen);
+  ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font='500 11px "IBM Plex Mono", monospace';
+  ctx.save(); ctx.translate(wallX+22,top+wingLen*0.5); ctx.rotate(Math.PI/2); ctx.fillStyle='rgba(31,36,39,.8)'; ctx.fillText('permanent wing: aquaculture, healing, tourism', -120, 0); ctx.restore();
+  ctx.save(); ctx.translate(wallX+22,bot-wingLen*0.5); ctx.rotate(Math.PI/2); ctx.fillStyle='rgba(31,36,39,.8)'; ctx.fillText('permanent wing, and the lock chamber', -110, 0); ctx.restore();
+  // the one lock chamber, against the SF wing
+  ctx.fillStyle='rgba(240,74,0,.18)'; ctx.fillRect(wallX-40,bot-wingLen-52,80,46); ctx.strokeStyle=css('--orange'); ctx.lineWidth=2; ctx.strokeRect(wallX-40,bot-wingLen-52,80,46);
+  ctx.fillStyle=css('--orange'); ctx.font='500 11px "IBM Plex Mono", monospace'; ctx.fillText('lock', wallX-12, bot-wingLen-24);
+  // working middle: apertures with turbine fins; angle 0 = open, PI/2 = closed
   for(let i=0;i<N;i++){
-    const l=levers[i], cy=top+pitch*(i+0.5), len=pitch*0.92;
+    const l=levers[i], cy=midTop+pitch*(i+0.5), len=pitch*0.92;
     const ang=Math.PI/2-l.a + (st.strain>0?Math.sin(st.t*40)*0.05*st.strain:0);
     const dx=Math.cos(ang)*len/2, dy=Math.sin(ang)*len/2;
     ctx.save(); ctx.translate(wallX,cy);
     ctx.strokeStyle=(i===st.rented)?css('--orange'):css('--lever'); ctx.lineWidth=(i===st.rented)?9:7; ctx.lineCap='round';
+    // aperture ring: opening shrinks as the unit closes
+    const op=Math.cos(l.a); ctx.strokeStyle='rgba(43,47,51,.55)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,len*0.42,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,'+(0.15+0.55*op)+')'; ctx.beginPath(); ctx.arc(0,0,len*0.40*Math.max(0.08,op),0,Math.PI*2); ctx.fill();
+    // turbine fin, twisting with the closure
     ctx.beginPath(); ctx.moveTo(-dx,-dy); ctx.lineTo(dx,dy); ctx.stroke();
-    // turbine hub
     ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(0,0,4,0,Math.PI*2); ctx.fill();
     ctx.restore();
   }
@@ -294,7 +307,7 @@ function drawWall(){
   ctx.fillText('PACIFIC', 24, H/2+4); ctx.fillText('THE BAY', W-96, H/2+4);
   ctx.fillText('Marin Headlands', 24, 30); ctx.fillText('San Francisco', 24, H-22);
   gauge(60, dh>0?dh:0); gauge(W-60, dh<0?-dh:0);
-  if(st.rented>=0){ ctx.fillStyle=css('--orange'); ctx.fillText('Lever '+(st.rented+1)+' booked. It turns, and you turn with it.', wallX+22, top+pitch*(st.rented+0.5)+4); }
+  if(st.rented>=0){ ctx.fillStyle=css('--orange'); ctx.fillText('Lever '+(st.rented+1)+' booked. It turns, and you turn with it.', wallX+22, midTop+pitch*(st.rented+0.5)+4); }
 }
 function gauge(x,h){
   const gh=Math.min(160,h*5.3); ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(x-8,H/2+80-160,16,160);
@@ -341,11 +354,11 @@ $('#tide').oninput=e=>{st.tide=+e.target.value;};
 let dragging=false, dragY=0, dragT=0;
 function canvasXY(e){ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]; }
 cv.addEventListener('pointerdown',e=>{ const [x,y]=canvasXY(e);
-  if(Math.abs(x-wallX)<40 && y>top && y<bot){ const i=Math.floor((y-top)/pitch); const l=levers[i]; if(e.shiftKey){ st.rented=(st.rented===i?-1:i);} else if(!st.weld){ l.target=(l.target>0.7?0:Math.PI/2);} return; }
+  if(Math.abs(x-wallX)<40 && y>midTop && y<midBot){ const i=Math.floor((y-midTop)/pitch); const l=levers[i]; if(e.shiftKey){ st.rented=(st.rented===i?-1:i);} else if(!st.weld){ l.target=(l.target>0.7?0:Math.PI/2);} return; }
   dragging=true; dragY=y; dragT=st.tide; cv.setPointerCapture(e.pointerId); });
 cv.addEventListener('pointermove',e=>{ if(!dragging) return; const [x,y]=canvasXY(e); setTide(Math.round((dragT+(dragY-y)/12)*2)/2); });
 cv.addEventListener('pointerup',()=>dragging=false); cv.addEventListener('pointercancel',()=>dragging=false);
-cv.addEventListener('dblclick',e=>{ const [x,y]=canvasXY(e); if(Math.abs(x-wallX)<40 && y>top && y<bot){ const i=Math.floor((y-top)/pitch); st.rented=(st.rented===i?-1:i);} });
+cv.addEventListener('dblclick',e=>{ const [x,y]=canvasXY(e); if(Math.abs(x-wallX)<40 && y>midTop && y<midBot){ const i=Math.floor((y-midTop)/pitch); st.rented=(st.rented===i?-1:i);} });
 
 /* ========== VIEW 2: THE TIDE CLOCK ========== */
 const cc=$('#cc'), c2=cc.getContext('2d'); const CW=cc.width, CH=cc.height;
