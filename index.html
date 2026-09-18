@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Lever Wall</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --fog:#EEF0F1; --card:#FFFFFF; --line:#D5DADD; --ink:#1F2427; --muted:#5C666D; --faint:#8C969C;
+  --ocean:#6F9DB8; --bay:#A9C4D2; --deep:#4F7F9C; --orange:#F04A00; --orange-soft:#FDE4D9; --lever:#2B2F33; --moss:#5C8C5A; --alert:#B8322A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fog);color:var(--ink);font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.6}
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:28px 96px}
+h1,h2,h3{font-family:"Archivo Black","Arial Black",sans-serif;font-weight:400;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(36px,6.5vw,66px);line-height:1;}
+h1 span{color:var(--orange)}
+h2{font-size:clamp(20px,3vw,28px);margin-bottom:10px}
+h3{font-size:16px;margin-bottom:4px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+.lede{font-size:19px;max-width:62ch;margin:14px 0 0}
+p{max-width:65ch}
+.stage{margin:26px 0 0;border:1px solid var(--line);border-radius:4px;background:#fff;overflow:hidden;position:relative}
+canvas{display:block;width:100%;height:auto;max-width:100%}
+.hud{position:absolute;left:14px;top:12px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);line-height:1.5;background:rgba(255,255,255,.85);padding:6px 9px;border-radius:3px}
+.hud b{color:var(--ink);font-weight:500}
+.hint{position:absolute;right:14px;bottom:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);background:rgba(255,255,255,.8);padding:3px 7px;border-radius:3px}
+.controls{display:grid;grid-template-columns:1fr;gap:14px;margin-top:16px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:4px}
+.ctl label{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.ctl label output{color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--orange);height:26px;margin:0}
+input[type=range]:focus-visible{outline:2px solid var(--deep);outline-offset:3px;border-radius:3px}
+.modes{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.modes .lbl{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.modes button{font:inherit;font-family:"Source Serif 4",serif;font-weight:600;font-size:15px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.modes button[aria-pressed=true]{background:var(--orange);color:#fff;border-color:var(--orange)}
+.modes button.quiet[aria-pressed=true]{background:var(--lever);border-color:var(--lever)}
+.modes button:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
+.readouts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.ro{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:12px 14px}
+.ro .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ro .v{font-family:"Archivo Black",sans-serif;font-size:24px;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums}
+.ro .u{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-top:2px}
+.ro.good .v{color:var(--moss)} .ro.warn .v{color:var(--orange)} .ro.bad .v{color:var(--alert)}
+section{margin-top:52px}
+.q{border-left:3px solid var(--orange);padding:6px 0 6px 20px;margin:18px 0}
+.q p{font-size:19px;line-height:1.5;margin:0}
+.q .who{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:.06em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px}
+.card p{font-size:15px;margin:6px 0 0;color:var(--muted)}
+.card p b{color:var(--ink);font-weight:600}
+.foot{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font-size:13.5px;font-family:"IBM Plex Mono",monospace;line-height:1.7}
+.foot a{color:var(--deep)}
+a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
+@media (max-width:700px){ .readouts{grid-template-columns:1fr 1fr} .grid{grid-template-columns:1fr} .hud{font-size:11px} }
+@media (prefers-reduced-motion:reduce){ .stage{--motion:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">The Lock at Golden Gate Bridge · a baby step</div>
+  <h1>The <span>Lever Wall</span></h1>
+  <p class="lede">Most of the time it is a bathtub with low walls. Not even noticeable. Then a storm surge or a king tide comes, the levers twist closed at slack water, and the Bay stops rising. Seen from above, ocean on the left, Bay on the right. Drag the tide. Twist the wall.</p>
+
+  <div class="stage">
+    <canvas id="cv" width="1200" height="640" aria-label="Plan view of the Golden Gate with a wall of twisting levers across the strait"></canvas>
+    <div class="hud" id="hud"></div>
+    <div class="hint">click a lever to rent it</div>
+  </div>
+
+  <div class="controls">
+    <div class="ctl">
+      <label for="tide">Ocean above Bay <output id="tideOut">0.0 ft</output></label>
+      <input type="range" id="tide" min="-4" max="30" step="0.5" value="0">
+    </div>
+    <div class="modes">
+      <span class="lbl">The wall</span>
+      <button id="bOpen" aria-pressed="true">Open with the flow</button>
+      <button id="bClose" class="quiet" aria-pressed="false">Twist closed</button>
+      <button id="bWeld" class="quiet" aria-pressed="false">Weld it, someday</button>
+      <span class="lbl" style="margin-left:14px">Weather</span>
+      <button id="bKing">King tide</button>
+      <button id="bSurge">Storm surge</button>
+      <button id="bCalm">Slack water</button>
+    </div>
+  </div>
+
+  <div class="readouts">
+    <div class="ro" id="roS"><div class="k">The wall right now</div><div class="v" id="sV">bathtub</div><div class="u" id="sU">low walls, flow passes</div></div>
+    <div class="ro" id="roH"><div class="k">Head difference</div><div class="v" id="hV">0.0</div><div class="u">feet, ocean minus Bay</div></div>
+    <div class="ro" id="roF"><div class="k">Push on the wall</div><div class="v" id="fV">0</div><div class="u">tons per foot of wall, closed</div></div>
+    <div class="ro" id="roE"><div class="k">Tide through the gaps</div><div class="v" id="eV">100%</div><div class="u" id="eU">natural exchange</div></div>
+  </div>
+
+  <section>
+    <h2>Why levers, not a dam</h2>
+    <div class="q">
+      <p>They can only turn when the water levels are fairly equal on either side, because it is a matter of strength. It is the resistance of the water on either side that makes it strong. You are not having to hold water back and you are not having to push the water this way or that way. You are just channeling the flow a bit.</p>
+      <div class="who">Hawk Davis, dictated 2026-09-18</div>
+    </div>
+    <p>A dam fights the ocean all day. A lever wall waits. At slack water there is nothing to fight, so the levers twist for the cost of turning them. Closed, the wall is a low dam only for the hours it needs to be one. The design ceiling is about 20 to 22 feet of head. Above that it does not hold everything back. It calms things down a heck of a lot, which is the point.</p>
+  </section>
+
+  <section>
+    <h2>What one wall buys</h2>
+    <div class="grid">
+      <div class="card"><h3>Hydro energy</h3><p>Every tide is a head difference. Throttled gaps are turbines waiting to be installed. <b>Tidal power is the maintenance budget.</b></p></div>
+      <div class="card"><h3>Pressure and cold</h3><p>Deep, cold, moving seawater beside a city: <b>hyperbaric wound care, cold compute</b>, a Faraday pod for whoever needs to disappear from the spectrum for a week.</p></div>
+      <div class="card"><h3>Rent a lever</h3><p>Stay in the middle of the channel, inside a lever. <b>It turns, and you turn with it.</b> Click one above.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What the numbers are doing</h2>
+    <p>Push on a closed wall is hydrostatic: seawater weighs about 64 pounds per cubic foot, so a head difference of h feet over a panel d feet deep loads the panel at roughly 64 × h × d pounds per foot of wall. The model uses a 40-foot panel on a sill. At 22 feet of head that is about 28 tons per foot, which is why the ocean-facing side is built heavier and why the wall is never asked to turn under load. The tide numbers are illustrative, not a hydrodynamic model of the Gate.</p>
+  </section>
+
+  <div class="foot">
+    Part of <a href="https://github.com/hawkishdavis/lock-at-golden-gate">The Lock at Golden Gate Bridge</a>: the essay, the full Lock Project compilation, and the lever-wall addendum. Idea on record since December 2024. Not engineering advice. Nothing here is a claim of buildability.
+  </div>
+</div>
+
+<script>
+(function(){
+  const cv=document.getElementById('cv'), ctx=cv.getContext('2d'); const W=cv.width,H=cv.height;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const N=13; // levers across the strait
+  const st={tide:0, mode:'open', target:0, angle:0, weld:false, t:0, rented:-1, waiting:false};
+  const parts=[]; for(let i=0;i<260;i++) parts.push({x:Math.random()*W,y:120+Math.random()*(H-240),s:.6+Math.random()});
+  const wallX=W*0.52, top=118, bot=H-118;
+  function color(){ return getComputedStyle(document.documentElement).getPropertyValue.bind(getComputedStyle(document.documentElement)); }
+  function draw(){
+    const c=color();
+    ctx.clearRect(0,0,W,H);
+    // water: ocean left, bay right; brightness by level
+    const dh=st.tide;
+    ctx.fillStyle=c('--ocean'); ctx.fillRect(0,0,wallX,H);
+    ctx.fillStyle=c('--bay'); ctx.fillRect(wallX,0,W-wallX,H);
+    // surge tint on ocean
+    if(dh>0){ ctx.fillStyle='rgba(79,127,156,'+Math.min(.55,dh/40)+')'; ctx.fillRect(0,0,wallX,H); }
+    // headlands
+    ctx.fillStyle='#C9C2AE';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(W,0); ctx.lineTo(W,70); ctx.quadraticCurveTo(W*0.55,140,W*0.42,90); ctx.quadraticCurveTo(W*0.3,60,0,95); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(W,H); ctx.lineTo(W,H-60); ctx.quadraticCurveTo(W*0.6,H-140,W*0.45,H-95); ctx.quadraticCurveTo(W*0.25,H-70,0,H-110); ctx.closePath(); ctx.fill();
+    // bridge (thin, orange)
+    ctx.strokeStyle=c('--orange'); ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(W*0.40,86); ctx.lineTo(W*0.44,H-92); ctx.stroke();
+    ctx.fillStyle=c('--orange'); [[W*0.407,200],[W*0.43,H-206]].forEach(p=>{ctx.fillRect(p[0]-6,p[1]-16,12,32)});
+    // flow particles
+    const gapOpen=Math.cos(st.angle); // 1 open .. 0 closed
+    const leak=0.08;
+    const pass=st.weld?0:Math.max(leak,gapOpen);
+    const dir=(dh>=0?1:-1);
+    const speed=(reduced?0:1)*(0.6+Math.min(3,Math.abs(dh))*0.6);
+    parts.forEach(p=>{
+      const nearWall=Math.abs(p.x-wallX)<18;
+      let v=speed*p.s*dir;
+      if(nearWall) v*= (pass<0.15? (Math.random()<pass?1:0) : pass);
+      p.x+=v; if(p.x>W) p.x=0; if(p.x<0) p.x=W;
+      if(p.y<top||p.y>bot) p.y=top+Math.random()*(bot-top);
+      ctx.fillStyle='rgba(255,255,255,.75)'; ctx.fillRect(p.x,p.y,2.2,1.4);
+    });
+    // wall levers
+    const pitch=(bot-top)/N;
+    for(let i=0;i<N;i++){
+      const cy=top+pitch*(i+0.5); const len=pitch*0.92;
+      const a=st.angle; // 0 = parallel to flow (open), PI/2 = across (closed)
+      const dx=Math.cos(Math.PI/2-a)*len/2, dy=Math.sin(Math.PI/2-a)*len/2;
+      ctx.save(); ctx.translate(wallX,cy);
+      ctx.strokeStyle=(i===st.rented)?c('--orange'):c('--lever'); ctx.lineWidth=(i===st.rented)?9:7; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(-dx,-dy); ctx.lineTo(dx,dy); ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(0,0,3.5,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    // sill line
+    ctx.strokeStyle='rgba(43,47,51,.35)'; ctx.setLineDash([6,8]); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(wallX,top-6); ctx.lineTo(wallX,bot+6); ctx.stroke(); ctx.setLineDash([]);
+    // labels
+    ctx.font='500 13px "IBM Plex Mono", monospace'; ctx.fillStyle='rgba(31,36,39,.8)';
+    ctx.fillText('PACIFIC', 24, H/2+4); ctx.fillText('THE BAY', W-96, H/2+4);
+    ctx.fillText('Marin Headlands', 24, 30); ctx.fillText('San Francisco', 24, H-22);
+    // gauges
+    gauge(60, dh>0?dh:0, 'ocean'); gauge(W-60, dh<0?-dh:0, 'bay');
+    if(st.rented>=0){ ctx.fillStyle=c('--orange'); ctx.font='500 13px "IBM Plex Mono", monospace'; ctx.fillText('Lever '+(st.rented+1)+' booked. It turns, and you turn with it.', wallX+22, top+pitch*(st.rented+0.5)+4); }
+  }
+  function gauge(x,h,side){
+    const gh=Math.min(160,h*5.3); ctx.fillStyle='rgba(255,255,255,.55)'; ctx.fillRect(x-8,H/2+80-160,16,160);
+    ctx.fillStyle=h>22?'#B8322A':'#F04A00'; ctx.fillRect(x-8,H/2+80-gh,16,gh);
+    ctx.strokeStyle='rgba(31,36,39,.5)'; ctx.lineWidth=1; ctx.strokeRect(x-8.5,H/2+80-160.5,17,161);
+    ctx.fillStyle='rgba(31,36,39,.8)'; ctx.font='11px "IBM Plex Mono", monospace'; ctx.fillText(h.toFixed(1)+' ft', x-20, H/2+96);
+  }
+  let last=performance.now();
+  function tick(now){
+    const dt=Math.min(.05,(now-last)/1000); last=now; st.t+=dt;
+    // levers only move at slack water (|dh| <= 1 ft), unless welded (they don't move at all)
+    const canTurn=Math.abs(st.tide)<=1 && !st.weld;
+    st.waiting=false;
+    if(Math.abs(st.angle-st.target)>0.001){
+      if(canTurn){ const k=Math.sign(st.target-st.angle); st.angle+=k*dt*1.2; if((k>0&&st.angle>st.target)||(k<0&&st.angle<st.target)) st.angle=st.target; }
+      else st.waiting=true;
+    }
+    draw(); readout(); requestAnimationFrame(tick);
+  }
+  const $=s=>document.querySelector(s);
+  function press(id,on){$(id).setAttribute('aria-pressed',on?'true':'false')}
+  function setMode(m){
+    if(st.weld && m!=='weld') return;
+    st.mode=m;
+    if(m==='open'){st.target=0;}
+    if(m==='close'){st.target=Math.PI/2;}
+    if(m==='weld'){ st.weld=true; st.target=Math.PI/2; if(Math.abs(st.tide)<=1) st.angle=Math.PI/2; }
+    press('#bOpen',m==='open'); press('#bClose',m==='close'); press('#bWeld',m==='weld');
+  }
+  $('#bOpen').onclick=()=>setMode('open'); $('#bClose').onclick=()=>setMode('close');
+  $('#bWeld').onclick=()=>{ if(st.weld){ st.weld=false; setMode('close'); } else setMode('weld'); };
+  $('#bKing').onclick=()=>{ $('#tide').value=7; st.tide=7; };
+  $('#bSurge').onclick=()=>{ $('#tide').value=14; st.tide=14; };
+  $('#bCalm').onclick=()=>{ $('#tide').value=0; st.tide=0; };
+  $('#tide').oninput=e=>{ st.tide=+e.target.value; };
+  cv.addEventListener('click',e=>{
+    const r=cv.getBoundingClientRect(); const x=(e.clientX-r.left)*W/r.width, y=(e.clientY-r.top)*H/r.height;
+    if(Math.abs(x-wallX)<40 && y>top && y<bot){ const i=Math.floor((y-top)/((bot-top)/N)); st.rented=(st.rented===i?-1:i); }
+  });
+  function readout(){
+    const dh=st.tide, closedness=Math.sin(st.angle);
+    $('#tideOut').textContent=dh.toFixed(1)+' ft';
+    $('#hV').textContent=Math.abs(dh).toFixed(1);
+    const roH=$('#roH'); roH.className='ro '+(Math.abs(dh)<=1?'good':Math.abs(dh)<=22?'warn':'bad');
+    const tons=(64*Math.abs(dh)*40/2000)*closedness; $('#fV').textContent=tons.toFixed(1);
+    const roF=$('#roF'); roF.className='ro '+(tons<5?'good':tons<28?'warn':'bad');
+    const pass=st.weld?0:Math.max(0.08,Math.cos(st.angle)); const pct=Math.round(pass*100);
+    $('#eV').textContent=(st.weld?'0':pct)+'%'; $('#eU').textContent=st.weld?'welded shut':(pct<15?'leaky, on purpose':'natural exchange');
+    const roE=$('#roE'); roE.className='ro '+(pct>60?'good':'warn');
+    const sV=$('#sV'), sU=$('#sU'), roS=$('#roS');
+    if(st.weld){ sV.textContent='welded'; sU.textContent='a low dam, permanently'; roS.className='ro warn'; }
+    else if(st.waiting){ sV.textContent='waiting'; sU.textContent='for slack water to turn'; roS.className='ro warn'; }
+    else if(closedness>0.95){ if(Math.abs(dh)>22){ sV.textContent='overtopped'; sU.textContent='above the design ceiling, still calming things'; roS.className='ro bad'; } else { sV.textContent='holding'; sU.textContent='a low dam for a few hours'; roS.className='ro good'; } }
+    else if(closedness<0.05){ sV.textContent='bathtub'; sU.textContent='low walls, flow passes'; roS.className='ro good'; }
+    else { sV.textContent='turning'; sU.textContent='at slack water, for the cost of turning'; roS.className='ro good'; }
+    $('#hud').innerHTML='head <b>'+dh.toFixed(1)+' ft</b> · levers <b>'+Math.round(closedness*100)+'% closed</b> · design ceiling <b>22 ft</b>';
+  }
+  readout(); requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
