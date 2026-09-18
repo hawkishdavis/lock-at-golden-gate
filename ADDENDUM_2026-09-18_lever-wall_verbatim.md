@@ -41,3 +41,9 @@ But then there's a section that you would want to be able to, even if it was und
 And in those moments, you can either schedule: boats aren't going to be coming in and out at that time, fine, just schedule around it. You can only come in when the tide is low. There's lots of places you can only go into when the tide is high, so might as well only go in when the tide is low. Or, yeah, you should make a proper lock, at least part of it. You only need one, right? Just basically, the boat comes in under the Golden Gate Bridge, it stops, and the water is either let out or let in, and then the boat is either let out or let in. And you only really need a couple of those along the way. I mean, that doesn't seem too bad.
 
 I mean, just one fairly large. Okay, so if a thousand feet is solid, always, never, then three thousand feet, two or three thousand, would be half of the number that you counted, 46 of those things. So that'd be twenty-something of those things, 26 of those things. Or it's two apertures and turbines on either side, and then just a drawbridge that goes flat and the water goes above and below it, and then it tilts vertical, so it goes horizontal. Pretty good jam."
+
+## Author's note, same night: the Marin side already floods
+
+"That's not even the worst of it. I have been in the past driving to Mill Valley, and I've gotten off of the road, and basically had my car get off the freeway and go up to halfway up the door in a puddle, slash not the puddle, the Bay. Just trying to get from the exit for Mill Valley and Marin City towards Tam Junction."
+
+Editor's note: that is the Manzanita area of Highway 101 at the Mill Valley and Marin City exit, which floods on ordinary king tides today.

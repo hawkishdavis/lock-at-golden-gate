@@ -146,29 +146,31 @@ a:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
     <div class="controls">
       <div class="ctl">
         <label for="slr">Sea level rise, permanent <output id="slrOut">0.0 ft</output></label>
-        <input type="range" id="slr" min="0" max="10" step="0.5" value="0">
+        <input type="range" id="slr" min="0" max="12" step="0.1" value="0">
       </div>
       <div class="ctl">
-        <label for="event">Storm surge plus king tide, this event <output id="eventOut">0.0 ft</output></label>
-        <input type="range" id="event" min="0" max="14" step="0.5" value="0">
+        <label for="event">This event, king tide plus surge, above MHHW <output id="eventOut">0.0 ft</output></label>
+        <input type="range" id="event" min="0" max="8" step="0.1" value="0">
       </div>
       <div class="modes">
         <span class="lbl">The wall</span>
         <button id="sOpen" aria-pressed="true">Open</button>
         <button id="sClosed" class="quiet" aria-pressed="false">Closed at slack</button>
         <span class="lbl" style="margin-left:10px">Presets</span>
-        <button id="sToday">Today, big storm</button>
-        <button id="s2050">2050, storm</button>
-        <button id="s2100">2100, worst case</button>
+        <button id="sKing">Dec 2024 king tide</button>
+        <button id="sToday">Jan 2026 tide plus surge</button>
+        <button id="s1983">Jan 1983 record</button>
+        <button id="s2050">2050 mid, same storm</button>
+        <button id="s2100">2100 high, same storm</button>
       </div>
     </div>
     <div class="readouts">
       <div class="ro" id="rsB"><div class="k">Bay water level</div><div class="v" id="sbV">0.0</div><div class="u">feet above today's high tide</div></div>
-      <div class="ro" id="rsA"><div class="k">Areas under water</div><div class="v" id="saV">0</div><div class="u">of 14 named low spots</div></div>
-      <div class="ro" id="rsM"><div class="k">The Marina</div><div class="v" id="smV">dry</div><div class="u">Marina Green and the harbor</div></div>
-      <div class="ro" id="rsT"><div class="k">Salesforce Tower</div><div class="v" id="stV">dry</div><div class="u">lobby level, Mission and First</div></div>
+      <div class="ro" id="rsA"><div class="k">Areas under water</div><div class="v" id="saV">0</div><div class="u">of 17 named low spots</div></div>
+      <div class="ro" id="rsM"><div class="k">The Marina</div><div class="v" id="smV">dry</div><div class="u">floods on king tides today</div></div>
+      <div class="ro" id="rsT"><div class="k">Salesforce Tower</div><div class="v" id="stV">dry</div><div class="u">SoMa and Transbay, about 9 ft</div></div>
     </div>
-    <p class="note">The map is a sketch, not a survey. Flood thresholds come from the essay's reading of NOAA's Sea Level Rise Viewer: about 2 feet floods Mission Bay, SFO and OAK runways, Alameda, Foster City, Alviso; higher water reaches the Embarcadero, the Marina, and the financial district. The wall, when closed at slack, holds the Bay at the level it closed at, up to a 22 foot design ceiling. Everything here is illustrative.</p>
+    <p class="note">The map is a sketch, not a survey. The thresholds are sourced, in feet above today’s mean higher high water at the San Francisco gauge. The Embarcadero at the Ferry Building takes street water on a calm day at a predicted 6.8 ft tide, about 1 ft up. Marina Green and Pier 14 flood under current king tides. The December 2024 king tide ran about 1.5 ft up; the January 3, 2026 tide plus surge about 3.8 ft; the January 1983 record about 2.9 ft. The seawall crest is about 5 ft above average high tide. The city’s Sea Level Rise Vulnerability Zone is 108 inches, 66 inches of rise plus 42 of tide and surge, and reaches into SoMa and the Transbay blocks. The city’s 2025 projections, feet: 2050 0.8 to 1.2; 2070 1.4 to 3.0; 2100 3.1 to 6.6; 2150 6.1 to 11.9. The Army Corps plan would raise the Embarcadero shoreline 3.5 to 7.5 ft and the Ferry Building 7 ft, at 17.8 billion dollars. The wall, closed at slack, holds the Bay at the level it closed at, up to a 22 ft ceiling; permanent rise still comes in through the open gaps the rest of the year.</p>
   </div>
 
 
@@ -442,20 +444,23 @@ const cs=$('#cs'), c3=cs.getContext('2d'); const SW=cs.width, SH=cs.height;
 const shore={slr:0, event:0, closed:false};
 // stylized bay: polygons in canvas coords. Low spots with flood thresholds (feet above today's high tide), from the essay's NOAA reading.
 const spots=[
-  {n:'Marina Green',x:330,y:250,r:22,t:6,tag:'marina'},
-  {n:'Embarcadero',x:420,y:300,r:24,t:8},
-  {n:'Mission Bay',x:430,y:360,r:26,t:2},
-  {n:'Salesforce Tower',x:405,y:318,r:10,t:11,tag:'tower'},
-  {n:'Hunters Point',x:470,y:440,r:22,t:2},
-  {n:'SFO runways',x:520,y:560,r:30,t:2},
-  {n:'Foster City',x:610,y:640,r:32,t:2},
-  {n:'Alviso',x:900,y:720,r:34,t:2},
-  {n:'Palo Alto baylands',x:760,y:690,r:28,t:3},
-  {n:'OAK runways',x:640,y:470,r:28,t:2},
-  {n:'Alameda',x:600,y:400,r:30,t:2},
-  {n:'Oakland waterfront',x:610,y:330,r:28,t:4},
-  {n:'Berkeley Marina',x:560,y:240,r:22,t:3},
-  {n:'Emeryville',x:585,y:280,r:18,t:3}
+  {n:'Manzanita, Hwy 101 at Mill Valley',x:310,y:150,r:20,t:1,src:'floods on ordinary king tides'},
+  {n:'Embarcadero at the Ferry Building',x:420,y:300,r:22,t:1,src:'street flooding at a predicted 6.8 ft tide, about 1 ft above MHHW'},
+  {n:'Marina Green',x:330,y:250,r:22,t:1.5,tag:'marina',src:'floods under current king tides'},
+  {n:'Mission Creek and Mission Bay',x:430,y:360,r:26,t:2,src:'vulnerable today to coastal overtopping'},
+  {n:'Islais Creek',x:470,y:440,r:22,t:2,src:'vulnerable today, creek plus Bay'},
+  {n:'SFO runways',x:520,y:560,r:30,t:2,src:'NOAA viewer, about 2 ft'},
+  {n:'OAK runways',x:640,y:470,r:28,t:2,src:'NOAA viewer, about 2 ft'},
+  {n:'Alameda',x:600,y:400,r:30,t:2,src:'NOAA viewer, about 2 ft'},
+  {n:'Foster City',x:610,y:640,r:32,t:2,src:'NOAA viewer, about 2 ft'},
+  {n:'Alviso',x:900,y:720,r:34,t:2,src:'NOAA viewer, about 2 ft'},
+  {n:'Fisherman’s Wharf piers',x:380,y:262,r:20,t:3,src:'Army Corps plan: floodproof the piers'},
+  {n:'Treasure Island edge',x:520,y:300,r:18,t:3,src:'filled shoreline, city vulnerability zone'},
+  {n:'Berkeley Marina',x:560,y:240,r:22,t:3,src:'illustrative'},
+  {n:'Emeryville',x:585,y:280,r:18,t:3,src:'illustrative'},
+  {n:'Oakland waterfront',x:610,y:330,r:28,t:4,src:'illustrative'},
+  {n:'Embarcadero seawall crest',x:445,y:330,r:16,t:5,src:'seawall about 5 ft above average high tide'},
+  {n:'SoMa and Transbay, Salesforce Tower',x:405,y:318,r:14,t:9,tag:'tower',src:'inside the city’s 108-inch vulnerability zone'}
 ];
 function bayLevel(){ // permanent rise always reaches the Bay (levers open most of the time); the event is held out if closed
   return shore.slr + (shore.closed?0:shore.event);
@@ -478,7 +483,7 @@ function drawShore(){
     c3.beginPath(); c3.arc(s.x,s.y,s.r*(wet?1+Math.min(.6,depth/8):1),0,Math.PI*2);
     c3.fillStyle=wet?'rgba(47,110,158,'+Math.min(.85,.35+depth/10)+')':'rgba(255,255,255,.55)'; c3.fill();
     c3.strokeStyle=wet?css('--flood'):'rgba(31,36,39,.35)'; c3.lineWidth=wet?2:1; c3.stroke();
-    c3.fillStyle='rgba(31,36,39,.85)'; c3.font=(wet?'500 ':'')+'12px "IBM Plex Mono", monospace'; c3.fillText(s.n+(wet?'':'  ('+s.t+' ft)'), s.x+s.r+6, s.y+4);
+    c3.fillStyle='rgba(31,36,39,.85)'; c3.font=(wet?'500 ':'')+'12px "IBM Plex Mono", monospace'; c3.fillText(s.n+'  ('+s.t+' ft)', s.x+s.r+6, s.y+4);
   });
   c3.fillStyle='rgba(31,36,39,.75)'; c3.font='500 13px "IBM Plex Mono", monospace';
   c3.fillText('PACIFIC', 40, 200); c3.fillText('SAN FRANCISCO', 300, 400); c3.fillText('OAKLAND', 700, 300); c3.fillText('SOUTH BAY', 760, 600); c3.fillText('the Gate', 236, 318);
@@ -496,7 +501,7 @@ $('#event').oninput=e=>{shore.event=+e.target.value;drawShore();};
 $('#sOpen').onclick=()=>{shore.closed=false;press('#sOpen',1);press('#sClosed',0);drawShore();};
 $('#sClosed').onclick=()=>{shore.closed=true;press('#sOpen',0);press('#sClosed',1);drawShore();};
 function preset(slr,ev){ shore.slr=slr; shore.event=ev; $('#slr').value=slr; $('#event').value=ev; drawShore(); }
-$('#sToday').onclick=()=>preset(0,7); $('#s2050').onclick=()=>preset(2,9); $('#s2100').onclick=()=>preset(6,12);
+$('#sKing').onclick=()=>preset(0,1.5); $('#sToday').onclick=()=>preset(0,3.8); $('#s1983').onclick=()=>preset(0,2.9); $('#s2050').onclick=()=>preset(1.0,3.8); $('#s2100').onclick=()=>preset(6.6,3.8);
 
 
 /* ========== VIEW 4: THE SECTION ========== */

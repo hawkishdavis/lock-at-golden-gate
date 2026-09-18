@@ -29,3 +29,15 @@ What one wall buys, in the author's list: hydro energy, hyperbaric wound care, c
 Idea and essay. Not engineering. The model's numbers are illustrative hydrostatics, not a hydrodynamic study of the Gate. Nothing here is a claim of buildability.
 
 Copyright Hawk Davis, 2024 to 2026. Quote with attribution.
+
+## Sources for the shoreline numbers
+
+- City and County of San Francisco, Guidance for Incorporating Sea Level Rise into Capital Planning, updated May 23, 2025: projections table (2050 0.8 to 1.2 ft; 2070 1.4 to 3.0; 2100 3.1 to 6.6; 2150 6.1 to 11.9); "the Embarcadero waterfront (Pier 14) and the Marina area in San Francisco experience flooding under current King Tide conditions." https://onesanfrancisco.org/sites/default/files/inline-files/2025_San_Francisco_SLR_Guidance_0.pdf
+- SF Planning, Sea Level Rise Vulnerability and Consequence Assessment, executive summary: the 108-inch zone (66 inches of rise plus 42 of tide and storm surge), about four square miles, 37,200 residents, 167,300 jobs; Mission Bay and Islais Creek vulnerable today. https://sfplanning.s3.amazonaws.com/default/files/plans-and-programs/planning-for-the-city/sea-level-rise/SLRVCA_Report_Executive_Summary.pdf
+- KQED, king tides on the Embarcadero, December 2024 tide about 7.36 ft. https://www.kqed.org/news/12018103/king-tides-foreshadow-far-wetter-future-sf-shoreline
+- SFBayWeather, king tides explainer: a predicted 6.8 ft tide floods the waterfront on a calm day. https://www.sfbayweather.com/learn/king-tides-bay-area-when-where-sea-level-rise-preview
+- San Francisco Chronicle, Rising Reality: the seawall rises about 5 ft above average high tide. https://projects.sfchronicle.com/2016/sea-level-rise/part2/
+- SF Port and U.S. Army Corps of Engineers, San Francisco Waterfront Flood Study: raise the Embarcadero shoreline 3.5 to 7.5 ft, Ferry Building 7 ft, floodproof Fisherman's Wharf piers; 17.8 billion dollars (2026). https://www.sfport.com/wrp/usace
+- Bay Crossings on Golden Gate tidal energy: up to 2.5 billion cubic meters through the Gate every six hours. https://www.baycrossings.com/tidal-energy-had-only-enron-known/
+- Golden Gate depth, up to about 377 ft: https://en.wikipedia.org/wiki/Golden_Gate
+- Manzanita, Highway 101 at the Mill Valley exit, king-tide flooding: the author's own car, halfway up the door.
