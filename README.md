@@ -2,7 +2,7 @@
 
 A lock across the mouth of San Francisco Bay, by Hawk Davis. An essay, a full project compilation, and the baby step that makes it buildable: a wall of levers that twist closed at slack water.
 
-- `index.html`: the Lever Wall, a live model seen from above. Drag the tide, twist the wall, rent a lever.
+- `index.html`: the Lever Wall in three views. The wall itself (click any lever to twist it, drag the water to set the tide), the tide clock (when the levers can turn, what the turbines make, a typical two days versus a storm), and the shoreline (which low spots flood at a given water level, wall open or closed).
 - `essay_Catch-Me-If-You-Can-Meets-Climate-Action.md`: the Medium piece, drafted 2025, never submitted. Published here as written.
 - `ADDENDUM_2026-09-18_lever-wall_verbatim.md`: the lever wall, in the author's own words, dictated 2026-09-18.
 - `the-lock-project_full-compilation.md` and the PDF: the Davos version, the Future Remembering Project (deciding from 2225), the SFOBLS proposal with its SWOT, and the tsunami note.
